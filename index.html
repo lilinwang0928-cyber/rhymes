@@ -544,6 +544,15 @@ footer{background:#1d3566}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
 /* 卷軸朗讀錄音 */
+.sc-pic{position:relative}
+.sc-hot{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;background:transparent;cursor:pointer;padding:0;min-width:34px}
+.sc-hot:hover,.sc-hot:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--gold)}
+.sc-hot.on{animation:pulse 1.2s infinite;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--gold)}
+.sc-hot.rec{animation:pulse 1s infinite;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--mark-red)}
+@keyframes pulse{50%{box-shadow:0 0 0 3px #fff,0 0 0 10px transparent}}
+@media (prefers-reduced-motion:reduce){.sc-hot.on,.sc-hot.rec{animation:none}}
+.sc-tip{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);background:#1d3566;color:#fff;font-size:.75rem;padding:2px 8px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.sc-hot:hover .sc-tip,.sc-hot:focus-visible .sc-tip,.sc-hot.on .sc-tip,.sc-hot.rec .sc-tip{opacity:1}
 .scroll-box{border-top:5px solid var(--vc)}
 .sc-ctl{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .sc-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -1438,6 +1447,9 @@ const MARK_SAMPLES = [
    kw 關鍵字、kc 關鍵字顏色（"r" 紅＝母音、"b" 藍＝子音）、ks 關鍵句、
    essay 短文（\n 分段）、audio 音檔路徑（例 "audio/v1-01.mp3"，與 html 放同一資料夾）
    圖片放在 IMGS 的 "s-v1-01" 這類 key */
+/* 卷軸圖上 ▶／🎤 的位置（百分比）；scrollAudio：中文全曲音檔路徑，例 "audio/scroll-v1.mp3"，留空就用語音朗讀 */
+const SC_HOT={v1:{p:[29.35,82.3],m:[36.88,82],d:5.6},v2:{p:[27.4,81.1],m:[35.2,81.1],d:5.8},v3:{p:[27.2,82.9],m:[34.8,82.9],d:5.8}};
+const SCROLL_AUDIO={v1:"",v2:"",v3:""};
 const DETAIL = {
   "v1-01":{kw:"rain",kc:"r",ks:"Rain, rain, go away.",essay:"",audio:""},
   "v1-02":{kw:"star",kc:"",ks:"Twinkle, twinkle, little star.",essay:"",audio:""},
@@ -1562,11 +1574,16 @@ function buildVol(k){
   </div>
   ${v.scroll?`<div class="sheet scroll-box" data-scroll="${k}">
     <div class="sec-head"><span class="pill">蕭博士慎選童謠卷軸</span><span class="muted small">先聽一遍，再錄自己唸，回放比對</span></div>
-    <img class="scroll-img" src="${IMGS[v.scroll]}" alt="${v.name}卷軸">
+    <div class="sc-pic">
+      <img class="scroll-img" src="${IMGS[v.scroll]}" alt="${v.name}卷軸">
+      <button class="sc-hot" style="left:${SC_HOT[k].p[0]}%;top:${SC_HOT[k].p[1]}%;width:${SC_HOT[k].d}%" data-sczhall="${k}" aria-label="唸出中文全曲"><span class="sc-tip">唸中文全曲</span></button>
+      <button class="sc-hot" style="left:${SC_HOT[k].m[0]}%;top:${SC_HOT[k].m[1]}%;width:${SC_HOT[k].d}%" data-scmic="${k}" aria-label="整卷錄音"><span class="sc-tip">錄音</span></button>
+    </div>
     <div class="sc-ctl">
       <div class="sc-group"><span class="sc-lbl">語音</span>
-        <button class="btn" data-scplay="${k}">▶ 整卷朗讀</button>
-        <label class="ck small"><input type="checkbox" data-sczh="${k}">連中文曲名一起唸</label>
+        <button class="btn" data-scplay="${k}">▶ 英文整卷朗讀</button>
+        <button class="btn ghost" data-sczhall="${k}">▶ 唸中文全曲</button>
+        <label class="ck small"><input type="checkbox" data-sczh="${k}">英文朗讀時連中文曲名一起唸</label>
       </div>
       <div class="sc-group"><span class="sc-lbl">錄音</span>
         <button class="btn rose" data-screc="${k}">● 整卷錄音</button>
@@ -2359,7 +2376,7 @@ function scSpeakOne(key,done){
     if(zh){const z=new SpeechSynthesisUtterance(zh);z.lang="zh-TW";const zv=speechSynthesis.getVoices().find(x=>/zh[-_]TW/i.test(x.lang));if(zv)z.voice=zv;z.rate=.95;z.onend=go;z.onerror=go;setTimeout(()=>speechSynthesis.speak(z),60)}
     else setTimeout(go,60)}
 }
-function scStopSeq(){if(SC.seq){SC.seq.stop=true;const b=$(`[data-scplay="${SC.seq.k}"]`);if(b)b.textContent="▶ 整卷朗讀";SC.seq=null}
+function scStopSeq(){if(SC.seq){SC.seq.stop=true;const b=$(`[data-scplay="${SC.seq.k}"]`);if(b)b.textContent="▶ 英文整卷朗讀";SC.seq=null}
   if(SC.audio){SC.audio.pause();SC.audio=null}try{speechSynthesis.cancel()}catch(e){}$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"))}
 function scPlayAll(k){
   if(SC.seq&&SC.seq.k===k){scStopSeq();return}
@@ -2407,6 +2424,37 @@ document.addEventListener("click",async e=>{
     }catch(err){if(k)scMsg(k,err.message==="nomr"?"這個瀏覽器不支援錄音，請改用新版 Safari 或 Chrome。":mediaErr(err))}
   }
 });
+
+
+/* 卷軸 ▶：唸出中文全曲 */
+const ZH={seq:null};
+function zhVoice(){return speechSynthesis.getVoices().find(x=>/zh[-_]TW/i.test(x.lang))||speechSynthesis.getVoices().find(x=>/^zh/i.test(x.lang))||null}
+function zhStop(){if(!ZH.seq)return;ZH.seq.stop=true;if(ZH.seq.audio)ZH.seq.audio.pause();try{speechSynthesis.cancel()}catch(e){}
+  $$(`[data-sczhall="${ZH.seq.k}"]`).forEach(b=>b.classList.remove("on"));const m=$(`[data-scmsg="${ZH.seq.k}"]`);if(m)m.textContent="";
+  $$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));ZH.seq=null}
+function zhAll(k){
+  if(ZH.seq&&ZH.seq.k===k){zhStop();return}
+  zhStop();scStopSeq();if(typeof READER!=="undefined"&&READER.active)stopReading();
+  const seq={k,stop:false};ZH.seq=seq;$$(`[data-sczhall="${k}"]`).forEach(b=>b.classList.add("on"));
+  scMsg(k,"▶ 正在唸中文全曲，再點一次 ▶ 停止");
+  if(SCROLL_AUDIO[k]){const a=new Audio(SCROLL_AUDIO[k]);seq.audio=a;a.onended=zhStop;a.play().catch(()=>{seq.audio=null;tts()});return}
+  tts();
+  function tts(){
+    if(!("speechSynthesis" in window)){scMsg(k,"這個瀏覽器不支援語音朗讀。");return}
+    const list=songsOf(k);let i=0;const zv=zhVoice();
+    const head=new SpeechSynthesisUtterance("蕭博士慎選童謠，第"+ZHNUM[+k.slice(1)-1]+"冊。");head.lang="zh-TW";if(zv)head.voice=zv;head.rate=.9;
+    const next=()=>{if(seq.stop)return;$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));
+      if(i>=list.length){zhStop();return}const s=list[i++],row=$(`[data-scrow="${s.vol}-${s.no}"]`);if(row){row.classList.add("playing");row.scrollIntoView({behavior:"smooth",block:"nearest"})}
+      const u=new SpeechSynthesisUtterance(`第${ZHNUM[s.no-1]}首，${s.zh}。`);u.lang="zh-TW";if(zv)u.voice=zv;u.rate=.85;u.onend=()=>setTimeout(next,350);u.onerror=next;speechSynthesis.speak(u)};
+    head.onend=next;head.onerror=next;speechSynthesis.cancel();setTimeout(()=>speechSynthesis.speak(head),60);
+  }
+}
+document.addEventListener("click",e=>{
+  const z=e.target.closest("[data-sczhall]");if(z){e.preventDefault();zhAll(z.dataset.sczhall);return}
+  const m=e.target.closest("[data-scmic]");if(m){e.preventDefault();zhStop();const k=m.dataset.scmic,b=$(`[data-screc="${k}"]`);if(b)b.click();
+    setTimeout(()=>{const on=scBusy()&&SC.key==="all-"+k;$$(`[data-scmic="${k}"]`).forEach(x=>x.classList.toggle("rec",on))},400)}
+});
+document.addEventListener("click",e=>{if(e.target.closest("[data-screc]"))setTimeout(()=>$$("[data-scmic]").forEach(x=>x.classList.toggle("rec",scBusy()&&SC.key==="all-"+x.dataset.scmic)),400)});
 
 /* ---------- 歡唱童謠 ---------- */
 function singPaint(){const log=store.get("sing",{}),d=ymd(new Date()),tot=Object.values(log).reduce((a,b)=>a+b,0),days=Object.keys(log).filter(k=>log[k]>0).length;
