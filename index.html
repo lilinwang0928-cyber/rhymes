@@ -341,6 +341,9 @@ code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;backgroun
 .nb-ti img{width:64px;height:64px;border-radius:10px}
 .nb-ti span{font-size:.7rem;white-space:nowrap}
 .nb-stk-act{gap:6px}
+.nb-clr{border-color:var(--rose);color:var(--rose)}
+.nb-clr:disabled{opacity:.4;cursor:default}
+.nb-clr[data-armed]{background:var(--rose);color:#fff}
 .nb-stickers{position:absolute;inset:0;pointer-events:none;z-index:3}
 .nb-page.stickering .nb-stickers{pointer-events:auto}
 .nb-page.stickering .nb-text{pointer-events:none}
@@ -1267,6 +1270,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       <div class="nb-stk" id="nbStkBar" hidden>
         <p class="muted small">點一張貼圖貼到筆記上；貼上後可以拖曳移動，點選後可放大、縮小或刪除。</p>
         <div class="nb-tray" id="nbTray"></div>
+        <div class="row"><button class="btn-s nb-clr" id="nbStkClear">🧹 清除全部貼圖</button><span class="muted small" id="nbStkN"></span></div>
         <div class="row nb-stk-act" id="nbStkAct" hidden>
           <span class="muted small">選取的貼圖</span>
           <button class="btn-s" data-sk="-">－ 縮小</button><button class="btn-s" data-sk="+">＋ 放大</button>
@@ -2395,6 +2399,7 @@ function stkSave(){store.set("stk-"+cur().id,STK);$("#nbSaved").textContent="已
 function stkDraw(){
   $("#nbStk").innerHTML=STK.map((s,i)=>`<div class="stk${i===stkSel?" sel":""}" data-sk-i="${i}" style="left:${s.x}%;top:${s.y}%;width:${s.w}%;transform:translate(-50%,-50%) rotate(${s.r||0}deg)"><img src="${STICKERS[s.i].src}" alt="${STICKERS[s.i].n}" draggable="false"></div>`).join("");
   $("#nbStkAct").hidden=stkSel<0;
+  $("#nbStkN").textContent=STK.length?`這一頁有 ${STK.length} 張貼圖`:"";$("#nbStkClear").disabled=!STK.length;
 }
 function stkSelect(i){stkSel=i;stkDraw()}
 $("#nbTray").addEventListener("click",e=>{const b=e.target.closest("[data-sti]");if(!b)return;
@@ -2405,6 +2410,7 @@ $("#nbStkAct").addEventListener("click",e=>{const b=e.target.closest("[data-sk]"
   else if(a==="front"){STK.push(STK.splice(stkSel,1)[0]);stkSel=STK.length-1}
   else if(a==="del"){STK.splice(stkSel,1);stkSel=-1}
   stkDraw();stkSave()});
+confirmBtn($("#nbStkClear"),"🧹 清除全部貼圖",()=>{STK=[];stkSel=-1;stkDraw();stkSave()});
 let stkDrag=null;
 $("#nbStk").addEventListener("pointerdown",e=>{if(nbMode!=="sticker")return;const el=e.target.closest(".stk");
   if(!el){stkSelect(-1);return}
