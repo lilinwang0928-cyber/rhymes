@@ -538,6 +538,30 @@ footer{background:#1d3566}
   .item-b{padding:10px 12px}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
+/* 卷軸朗讀錄音 */
+.scroll-box{border-top:5px solid var(--vc)}
+.sc-ctl{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sc-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sc-lbl{font-size:.75rem;letter-spacing:.12em;font-weight:700;color:var(--muted)}
+.sc-time{font-family:var(--f-en);font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);min-width:3em}
+.sc-time.over{color:var(--mark-red)}
+.sc-audio{width:min(100%,320px);height:36px}
+.sc-msg{flex-basis:100%}
+.sc-msg:empty{display:none}
+.sc-list{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:6px}
+.sc-row{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.sc-row.playing{border-color:var(--gold);background:var(--gold-soft);box-shadow:0 0 0 2px var(--gold)}
+.sc-no{font-family:var(--f-en);font-weight:600;color:var(--vc);font-variant-numeric:tabular-nums}
+.sc-t{display:grid;min-width:0;line-height:1.35}
+.sc-t b{font-family:var(--f-display);font-size:1rem}
+.sc-t .en{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-btns{display:flex;gap:4px}
+.sc-btns .btn-s{padding:3px 8px;font-size:.8rem}
+.sc-btns .btn-s:disabled{opacity:.35;cursor:default}
+.sc-btns .btn-s.ready{background:var(--mark-green);border-color:var(--mark-green);color:#fff}
+.sc-r{border-color:var(--rose)!important;color:var(--rose)!important}
+.sc-r.on{background:var(--rose)!important;color:#fff!important}
+@media (max-width:420px){.sc-row{grid-template-columns:26px 1fr}.sc-btns{grid-column:2}}
 /* 頁尾 */
 footer{background:var(--ink);color:#f3ead8;margin-top:10px}
 footer .wrap{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));display:grid;gap:12px;justify-items:center;text-align:center}
@@ -1488,7 +1512,30 @@ function buildVol(k){
     <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">▶ 全冊連續朗讀</button></div>
     <div class="songs">${list}</div>
   </div>
-  ${v.scroll?`<div class="sheet"><div class="sec-head"><span class="pill">蕭博士慎選童謠卷軸</span></div><img class="scroll-img" src="${IMGS[v.scroll]}" alt="${v.name}卷軸"></div>`:""}`;
+  ${v.scroll?`<div class="sheet scroll-box" data-scroll="${k}">
+    <div class="sec-head"><span class="pill">蕭博士慎選童謠卷軸</span><span class="muted small">先聽一遍，再錄自己唸，回放比對</span></div>
+    <img class="scroll-img" src="${IMGS[v.scroll]}" alt="${v.name}卷軸">
+    <div class="sc-ctl">
+      <div class="sc-group"><span class="sc-lbl">語音</span>
+        <button class="btn" data-scplay="${k}">▶ 整卷朗讀</button>
+        <label class="ck small"><input type="checkbox" data-sczh="${k}">連中文曲名一起唸</label>
+      </div>
+      <div class="sc-group"><span class="sc-lbl">錄音</span>
+        <button class="btn rose" data-screc="${k}">● 整卷錄音</button>
+        <span class="sc-time" data-sctime="${k}">0:00</span>
+        <audio class="sc-audio" data-scaudio="${k}" controls hidden></audio>
+      </div>
+      <span class="muted small sc-msg" data-scmsg="${k}" role="status"></span>
+    </div>
+    <ol class="sc-list">${songsOf(k).map(s=>`<li class="sc-row" data-scrow="${s.vol}-${s.no}">
+      <span class="sc-no">${String(s.no).padStart(2,"0")}</span>
+      <span class="sc-t"><b>${s.zh}</b><span class="en">${esc(s.en)}</span></span>
+      <span class="sc-btns">
+        <button class="btn-s" data-scone="${s.vol}-${s.no}" aria-label="聽 ${esc(s.en)}">🔊 聽</button>
+        <button class="btn-s sc-r" data-scrone="${s.vol}-${s.no}" aria-label="錄 ${s.zh}">● 錄</button>
+        <button class="btn-s" data-scpb="${s.vol}-${s.no}" disabled aria-label="回放 ${s.zh}">▶ 回放</button>
+      </span></li>`).join("")}</ol>
+  </div>`:""}`;
 }
 Object.keys(VOLS).forEach(buildVol);
 document.addEventListener("click",e=>{
@@ -2248,6 +2295,70 @@ $("#nbExport").addEventListener("click",()=>{
 addEventListener("resize",()=>{if(!$("#note").hidden)nbLayout()});
 function noteShown(){nbLayout()}
 nbRender();
+
+
+/* ---------- 卷軸：語音音檔與錄音回放 ---------- */
+const SC={rec:null,stream:null,key:null,t0:0,tick:null,blobs:{},seq:null};
+function scSpeakOne(key,done){
+  const [v,n]=key.split("-").map(Number),s=SONGS["v"+v][n-1],det=DETAIL[`v${v}-${pad(n)}`]||{};
+  const box=$(`[data-scrow="${key}"]`);$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));if(box)box.classList.add("playing");
+  const fin=()=>{if(box)box.classList.remove("playing");done&&done()};
+  if(det.audio){const a=new Audio(det.audio);SC.audio=a;a.onended=fin;a.onerror=()=>tts();a.play().catch(()=>tts());return}
+  tts();
+  function tts(){if(!("speechSynthesis" in window)){fin();return}speechSynthesis.cancel();
+    const zh=SC.withZh&&s[0]?s[0]+"。":"";
+    const go=()=>{const u=new SpeechSynthesisUtterance(s[1]);if(voice)u.voice=voice;u.lang="en-US";u.rate=.88;u.onend=fin;u.onerror=fin;speechSynthesis.speak(u)};
+    if(zh){const z=new SpeechSynthesisUtterance(zh);z.lang="zh-TW";const zv=speechSynthesis.getVoices().find(x=>/zh[-_]TW/i.test(x.lang));if(zv)z.voice=zv;z.rate=.95;z.onend=go;z.onerror=go;setTimeout(()=>speechSynthesis.speak(z),60)}
+    else setTimeout(go,60)}
+}
+function scStopSeq(){if(SC.seq){SC.seq.stop=true;const b=$(`[data-scplay="${SC.seq.k}"]`);if(b)b.textContent="▶ 整卷朗讀";SC.seq=null}
+  if(SC.audio){SC.audio.pause();SC.audio=null}try{speechSynthesis.cancel()}catch(e){}$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"))}
+function scPlayAll(k){
+  if(SC.seq&&SC.seq.k===k){scStopSeq();return}
+  scStopSeq(); if(typeof READER!=="undefined"&&READER.active) stopReading();
+  SC.withZh=!!$(`[data-sczh="${k}"]`).checked;
+  const list=songsOf(k).map(s=>`${s.vol}-${s.no}`),seq={k,i:0,stop:false};SC.seq=seq;
+  $(`[data-scplay="${k}"]`).textContent="■ 停止朗讀";
+  const next=()=>{if(seq.stop)return;if(seq.i>=list.length){scStopSeq();return}const key=list[seq.i++];
+    const row=$(`[data-scrow="${key}"]`);if(row)row.scrollIntoView({behavior:"smooth",block:"nearest"});
+    scSpeakOne(key,()=>setTimeout(next,600))};
+  next();
+}
+async function scStartRec(key,onStop){
+  if(typeof MediaRecorder==="undefined") throw new Error("nomr");
+  SC.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+  const ch=[],mime=pickMime("audio");SC.rec=new MediaRecorder(SC.stream,mime?{mimeType:mime}:undefined);SC.key=key;
+  SC.rec.ondataavailable=e=>e.data.size&&ch.push(e.data);
+  SC.rec.onstop=()=>{SC.stream.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:SC.rec.mimeType||mime||"audio/webm"});
+    if(SC.blobs[key])URL.revokeObjectURL(SC.blobs[key]);SC.blobs[key]=URL.createObjectURL(blob);SC.rec=null;SC.key=null;clearInterval(SC.tick);onStop(SC.blobs[key])};
+  SC.rec.start(250);SC.t0=Date.now();
+}
+function scMsg(k,txt){const m=$(`[data-scmsg="${k}"]`);if(m)m.textContent=txt||""}
+function scBusy(){return SC.rec&&SC.rec.state==="recording"}
+document.addEventListener("click",async e=>{
+  const p=e.target.closest("[data-scplay]");if(p){scPlayAll(p.dataset.scplay);return}
+  const one=e.target.closest("[data-scone]");if(one){scStopSeq();SC.withZh=false;scSpeakOne(one.dataset.scone);return}
+  const pb=e.target.closest("[data-scpb]");if(pb){const u=SC.blobs[pb.dataset.scpb];if(u){scStopSeq();const a=new Audio(u);fixDur(a);a.play()}return}
+  const whole=e.target.closest("[data-screc]");
+  if(whole){const k=whole.dataset.screc,key="all-"+k;
+    if(scBusy()){if(SC.key===key)SC.rec.stop();return}
+    scStopSeq();scMsg(k,"");
+    try{await scStartRec(key,url=>{whole.textContent="● 重錄整卷";const a=$(`[data-scaudio="${k}"]`);a.src=url;fixDur(a);a.hidden=false;
+        const sec=Math.round((Date.now()-SC.t0)/1000);scMsg(k,`錄好了，用時 ${fmt(sec)}（${VOLS[k].limitLbl}）。按播放鍵回放。`)});
+      whole.innerHTML='<span class="recdot"></span> 停止錄音';
+      const tm=$(`[data-sctime="${k}"]`);SC.tick=setInterval(()=>{const s=(Date.now()-SC.t0)/1000;tm.textContent=fmt(s);tm.classList.toggle("over",s>VOLS[k].limit)},250);
+    }catch(err){scMsg(k,err.message==="nomr"?"這個瀏覽器不支援錄音，請改用新版 Safari 或 Chrome。":mediaErr(err))}
+    return}
+  const r=e.target.closest("[data-scrone]");
+  if(r){const key=r.dataset.scrone,box=r.closest("[data-scroll]"),k=box&&box.dataset.scroll;
+    if(scBusy()){if(SC.key===key)SC.rec.stop();return}
+    scStopSeq();if(k)scMsg(k,"");
+    try{await scStartRec(key,()=>{r.textContent="● 重錄";r.classList.remove("on");const b=$(`[data-scpb="${key}"]`);if(b){b.disabled=false;b.classList.add("ready")}
+        const [v,n]=key.split("-"),id=`v${v}-${pad(n)}`;store.set("cnt-"+id,store.get("cnt-"+id,0)+1)});
+      r.innerHTML='<span class="recdot"></span> 停';r.classList.add("on");
+    }catch(err){if(k)scMsg(k,err.message==="nomr"?"這個瀏覽器不支援錄音，請改用新版 Safari 或 Chrome。":mediaErr(err))}
+  }
+});
 
 /* ---------- 歡唱童謠 ---------- */
 function singPaint(){const log=store.get("sing",{}),d=ymd(new Date()),tot=Object.values(log).reduce((a,b)=>a+b,0),days=Object.keys(log).filter(k=>log[k]>0).length;
