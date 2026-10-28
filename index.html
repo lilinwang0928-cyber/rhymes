@@ -564,6 +564,9 @@ footer{background:#1d3566}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
 /* 卷軸朗讀錄音 */
+.full-audio audio{width:100%}
+.fa-ch{display:flex;flex-wrap:wrap;gap:6px}
+.fa-time:empty{display:none}
 .sc-pic{position:relative}
 .sc-hot{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;background:transparent;cursor:pointer;padding:0;min-width:34px}
 .sc-hot:hover,.sc-hot:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--gold)}
@@ -1508,6 +1511,9 @@ const MARK_SAMPLES = [
 /* 卷軸圖上 ▶／🎤 的位置（百分比）；scrollAudio：中文全曲音檔路徑，例 "audio/scroll-v1.mp3"，留空就用語音朗讀 */
 const SC_HOT={v1:{p:[29.35,82.3],m:[36.88,82],d:5.6},v2:{p:[27.4,81.1],m:[35.2,81.1],d:5.8},v3:{p:[27.2,82.9],m:[34.8,82.9],d:5.8}};
 const SCROLL_AUDIO={v1:"",v2:"",v3:""};
+/* 全冊示範音檔（英文全曲）；CHAPTERS 填每首開始的秒數（14 個），填好後可逐首跳播、曲目頁「示範」也會播該段 */
+const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"",v3:""};
+const CHAPTERS={v1:[],v2:[],v3:[]};
 const DETAIL = {
   "v1-01":{kw:"rain",kc:"r",ks:"Rain, rain, go away.",essay:"",audio:""},
   "v1-02":{kw:"star",kc:"",ks:"Twinkle, twinkle, little star.",essay:"",audio:""},
@@ -1626,6 +1632,13 @@ function buildVol(k){
       </div>
     </div>
   </div>
+  ${FULL_AUDIO[k]?`<div class="sheet full-audio">
+    <div class="sec-head"><span class="pill">🎧 全冊示範音檔</span><span class="muted small">真人示範 14 首全曲，跟著聽、跟著唸</span></div>
+    <audio controls preload="metadata" src="${FULL_AUDIO[k]}" data-full="${k}"></audio>
+    <div class="row"><span class="muted small">播放速度</span>${[0.75,0.9,1,1.25].map(r=>`<button class="seg" data-frate="${k}:${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}
+      <span class="muted small fa-time" data-ftime="${k}"></span></div>
+    ${CHAPTERS[k]&&CHAPTERS[k].length===songsOf(k).length?`<div class="fa-ch">${songsOf(k).map((s,i)=>`<button class="btn-s" data-fch="${k}:${i}">${pad(i+1)} ${s.zh}</button>`).join("")}</div>`:""}
+  </div>`:""}
   <div class="sheet">
     <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">▶ 全冊連續朗讀</button></div>
     <div class="songs">${list}</div>
@@ -1680,7 +1693,8 @@ function renderSong(){
   const prev=no>1?arr[no-2]:null, next=no<arr.length?arr[no]:null;
   const kc=d.kc==="r"?"var(--mark-red)":d.kc==="b"?"var(--mark-blue)":"var(--ink)";
   const essay = d.essay ? d.essay.split("\n").filter(x=>x.trim()).map(p=>`<p>${esc(p)}</p>`).join("") : `<div class="placeholder soon">📖 短文準備中，敬請期待</div>`;
-  const audio = d.audio ? `<audio controls preload="none" src="${esc(d.audio)}" style="width:100%"></audio><div class="row"><span class="muted" style="font-size:.88rem">播放速度</span>${[0.75,1,1.25].map(r=>`<button class="seg" data-rate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</div>` : `<div class="placeholder soon">🎧 示範音檔準備中，先按上方 🔊 聽關鍵句</div>`;
+  const fullNote = !d.audio&&FULL_AUDIO["v"+vol] ? (CHAPTERS["v"+vol].length===arr.length?`<button class="btn" data-fch="v${vol}:${no-1}" data-fchsong="1">▶ 播放本首示範</button><audio controls preload="metadata" src="${FULL_AUDIO["v"+vol]}" data-full="v${vol}" hidden></audio>`:`<p class="muted small">本冊的真人示範是一整段全冊音檔，請到<button class="btn-s" data-target="v${vol}">${VOLS["v"+vol].short}曲目頁</button>上方「🎧 全冊示範音檔」播放。</p>`) : "";
+  const audio = fullNote ? fullNote : d.audio ? `<audio controls preload="none" src="${esc(d.audio)}" style="width:100%"></audio><div class="row"><span class="muted" style="font-size:.88rem">播放速度</span>${[0.75,1,1.25].map(r=>`<button class="seg" data-rate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</div>` : `<div class="placeholder soon">🎧 示範音檔準備中，先按上方 🔊 聽關鍵句</div>`;
   const lyr = s[2] ? `<div class="lyrics">${esc(s[2])}</div><div class="row"><button class="btn ghost" data-say="${esc(s[2])}">🔊 朗讀歌詞</button><button class="btn ghost" data-markly="${vol}-${no}">✎ 拿去劃記</button></div>` : `<div class="placeholder soon">🎵 歌詞準備中，敬請期待</div>`;
   $("#song").style.setProperty("--vc",`var(--v-v${vol})`);
   $("#song").innerHTML=`
@@ -1947,7 +1961,7 @@ document.addEventListener("click",e=>{
     const stop=()=>{if(a.currentTime>=t){a.pause();a.removeEventListener("timeupdate",stop)}};a.addEventListener("timeupdate",stop);return}
   const d=e.target.closest("[data-std]"); if(d){const id=d.dataset.std,det=DETAIL[id]||{},[,v,n]=id.match(/v(\d)-(\d+)/),s=SONGS["v"+v][+n-1];
     if(stdAudio){stdAudio.pause();stdAudio=null}
-    if(det.audio){stdAudio=new Audio(det.audio);stdAudio.play().catch(()=>speak(s[1]))}else speak(s[2]?s[2].replace(/\n/g,". "):s[1])}
+    if(!det.audio&&songDemo(+v,+n))return;if(det.audio){stdAudio=new Audio(det.audio);stdAudio.play().catch(()=>speak(s[1]))}else speak(s[2]?s[2].replace(/\n/g,". "):s[1])}
 });
 $("#maDl").addEventListener("click",()=>{if(!MA.blob)return;saveBlob(MA.blob,stuFile(MA.k,"模擬錄音")+"."+MA.ext);UNSAVED.delete("ma")});
 confirmBtn($("#maDel"),"刪除這次錄音",()=>{MA.blob=null;const a=$("#maAudio");a.pause();if(a.src)URL.revokeObjectURL(a.src);a.removeAttribute("src");$("#maResult").hidden=true;UNSAVED.delete("ma");$("#maStart").textContent="● 開始模擬錄音"});
@@ -2564,6 +2578,27 @@ document.addEventListener("click",e=>{
     setTimeout(()=>{const on=scBusy()&&SC.key==="all-"+k;$$(`[data-scmic="${k}"]`).forEach(x=>x.classList.toggle("rec",on))},400)}
 });
 document.addEventListener("click",e=>{if(e.target.closest("[data-screc]"))setTimeout(()=>$$("[data-scmic]").forEach(x=>x.classList.toggle("rec",scBusy()&&SC.key==="all-"+x.dataset.scmic)),400)});
+
+
+/* ---------- 全冊示範音檔 ---------- */
+function fullEl(k){return $(`audio[data-full="${k}"]`)}
+function playChapter(k,i,el){
+  const a=el||fullEl(k)||new Audio(FULL_AUDIO[k]),ch=CHAPTERS[k];if(!ch||ch[i]==null)return false;
+  const end=ch[i+1]!=null?ch[i+1]:Infinity;a.currentTime=ch[i];a.play().catch(()=>{});
+  a._stopAt=end;return a;
+}
+document.addEventListener("timeupdate",e=>{const a=e.target;if(a._stopAt&&a.currentTime>=a._stopAt){a.pause();a._stopAt=null}
+  if(a.dataset&&a.dataset.full){const k=a.dataset.full,ch=CHAPTERS[k];let lbl="";
+    if(ch&&ch.length){let i=ch.length-1;while(i>0&&a.currentTime<ch[i])i--;lbl=`正在播：第${ZHNUM[i]}首 ${songsOf(k)[i].zh}`;
+      $$(`#${k} .song-row`).forEach((r,j)=>r.classList.toggle("reading",j===i&&!a.paused))}
+    const tl=$(`[data-ftime="${k}"]`);if(tl)tl.textContent=lbl}},true);
+document.addEventListener("play",e=>{const a=e.target;if(a.dataset&&a.dataset.full){if(typeof READER!=="undefined"&&READER.active)stopReading();if(typeof scStopSeq==="function")scStopSeq()}},true);
+document.addEventListener("click",e=>{
+  const r=e.target.closest("[data-frate]");if(r){const [k,v]=r.dataset.frate.split(":");const a=fullEl(k);if(a)a.playbackRate=+v;$$(`[data-frate^="${k}:"]`).forEach(b=>b.setAttribute("aria-pressed",b===r));return}
+  const c=e.target.closest("[data-fch]");if(c){const [k,i]=c.dataset.fch.split(":");const a=fullEl(k);if(a){a._stopAt=null;a.currentTime=CHAPTERS[k][+i];a.play()}}
+});
+/* 某首的示範：有單首音檔用單首；有分段時間用全冊音檔該段 */
+function songDemo(vol,no){const k="v"+vol,ch=CHAPTERS[k];if(FULL_AUDIO[k]&&ch&&ch.length===SONGS[k].length){return playChapter(k,no-1,window._demoAudio||(window._demoAudio=new Audio(FULL_AUDIO[k])))}return false}
 
 /* ---------- 歡唱童謠 ---------- */
 function singPaint(){const log=store.get("sing",{}),d=ymd(new Date()),tot=Object.values(log).reduce((a,b)=>a+b,0),days=Object.keys(log).filter(k=>log[k]>0).length;
