@@ -564,6 +564,13 @@ footer{background:#1d3566}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
 /* 卷軸朗讀錄音 */
+.trk{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--tint)}
+.trk+.trk{margin-top:8px}
+.trk.en{border-left:4px solid var(--mark-blue)}.trk.zh{border-left:4px solid var(--mark-red)}
+.trk-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.trk-h b{font-size:.95rem}
+.trk-r{display:flex;gap:4px}.trk-r .seg{padding:2px 10px;font-size:.8rem}
+.trk audio{width:100%}
 .full-audio audio{width:100%}
 .fa-ch{display:flex;flex-wrap:wrap;gap:6px}
 .fa-time:empty{display:none}
@@ -1515,20 +1522,20 @@ const SCROLL_AUDIO={v1:"",v2:"",v3:""};
 const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"",v3:""};
 const CHAPTERS={v1:[],v2:[],v3:[]};
 const DETAIL = {
-  "v1-01":{kw:"rain",kc:"r",ks:"Rain, rain, go away.",essay:"",audio:""},
-  "v1-02":{kw:"star",kc:"",ks:"Twinkle, twinkle, little star.",essay:"",audio:""},
-  "v1-03":{kw:"you",kc:"r",ks:"And so are you.",essay:"",audio:""},
-  "v1-04":{kw:"wish",kc:"b",ks:"Get the wish I wish tonight.",essay:"",audio:""},
-  "v1-05":{kw:"Teddy bear",kc:"r",ks:"Teddy bear, Teddy bear, say goodnight.",essay:"",audio:""},
-  "v1-06":{kw:"donkey",kc:"b",ks:"I'm a donkey!",essay:"",audio:""},
-  "v1-07":{kw:"fall",kc:"r",ks:"Humpty Dumpty had a great fall.",essay:"",audio:""},
-  "v1-08":{kw:"sleep",kc:"b",ks:"Good night.",essay:"",audio:""},
-  "v1-09":{kw:"lamb",kc:"r",ks:"Mary had a little lamb.",essay:"",audio:""},
-  "v1-10":{kw:"full",kc:"b",ks:"Have you any wool?",essay:"",audio:""},
-  "v1-11":{kw:"baby",kc:"r",ks:"The cradle will rock.",essay:"",audio:""},
-  "v1-12":{kw:"muffin",kc:"b",ks:"Oh, have you seen the muffin man?",essay:"",audio:""},
-  "v1-13":{kw:"merrily",kc:"r",ks:"Life is but a dream.",essay:"",audio:""},
-  "v1-14":{kw:"apple",kc:"b",ks:"An apple a day.",essay:"",audio:""},
+  "v1-01":{kw:"rain",kc:"r",ks:"Rain, rain, go away.",essay:"",audio:"audio/v1-01-en.mp3",zh:"audio/v1-01-zh.mp3"},
+  "v1-02":{kw:"star",kc:"",ks:"Twinkle, twinkle, little star.",essay:"",audio:"audio/v1-02-en.mp3",zh:"audio/v1-02-zh.mp3"},
+  "v1-03":{kw:"you",kc:"r",ks:"And so are you.",essay:"",audio:"audio/v1-03-en.mp3",zh:"audio/v1-03-zh.mp3"},
+  "v1-04":{kw:"wish",kc:"b",ks:"Get the wish I wish tonight.",essay:"",audio:"audio/v1-04-en.mp3",zh:"audio/v1-04-zh.mp3"},
+  "v1-05":{kw:"Teddy bear",kc:"r",ks:"Teddy bear, Teddy bear, say goodnight.",essay:"",audio:"audio/v1-05-en.mp3",zh:"audio/v1-05-zh.mp3"},
+  "v1-06":{kw:"donkey",kc:"b",ks:"I'm a donkey!",essay:"",audio:"audio/v1-06-en.mp3",zh:"audio/v1-06-zh.mp3"},
+  "v1-07":{kw:"fall",kc:"r",ks:"Humpty Dumpty had a great fall.",essay:"",audio:"audio/v1-07-en.mp3",zh:"audio/v1-07-zh.mp3"},
+  "v1-08":{kw:"sleep",kc:"b",ks:"Good night.",essay:"",audio:"audio/v1-08-en.mp3",zh:"audio/v1-08-zh.mp3"},
+  "v1-09":{kw:"lamb",kc:"r",ks:"Mary had a little lamb.",essay:"",audio:"audio/v1-09-en.mp3",zh:"audio/v1-09-zh.mp3"},
+  "v1-10":{kw:"full",kc:"b",ks:"Have you any wool?",essay:"",audio:"audio/v1-10-en.mp3",zh:"audio/v1-10-zh.mp3"},
+  "v1-11":{kw:"baby",kc:"r",ks:"The cradle will rock.",essay:"",audio:"audio/v1-11-en.mp3",zh:"audio/v1-11-zh.mp3"},
+  "v1-12":{kw:"muffin",kc:"b",ks:"Oh, have you seen the muffin man?",essay:"",audio:"audio/v1-12-en.mp3",zh:"audio/v1-12-zh.mp3",zhLabel:"中文讀經"},
+  "v1-13":{kw:"merrily",kc:"r",ks:"Life is but a dream.",essay:"",audio:"audio/v1-13-en.mp3",zh:"audio/v1-13-zh.mp3"},
+  "v1-14":{kw:"apple",kc:"b",ks:"An apple a day.",essay:"",audio:"audio/v1-14-en.mp3",zh:"audio/v1-14-zh.mp3"},
   "v2-01":{kw:"we",kc:"r",ks:"Me myself and I.",essay:"",audio:""},
   "v2-02":{kw:"teapot",kc:"b",ks:"Tip me up and pour me out.",essay:"",audio:""},
   "v2-03":{kw:"days",kc:"",ks:"How many days has my baby to play?",essay:"",audio:""},
@@ -1667,7 +1674,8 @@ function buildVol(k){
       <span class="sc-no">${String(s.no).padStart(2,"0")}</span>
       <span class="sc-t"><b>${s.zh}</b><span class="en">${esc(s.en)}</span></span>
       <span class="sc-btns">
-        <button class="btn-s" data-scone="${s.vol}-${s.no}" aria-label="聽 ${esc(s.en)}">🔊 聽</button>
+        <button class="btn-s" data-scone="${s.vol}-${s.no}" aria-label="聽英文 ${esc(s.en)}">🔊 英</button>
+        ${(DETAIL[`v${s.vol}-${String(s.no).padStart(2,"0")}`]||{}).zh?`<button class="btn-s" data-sczh1="${s.vol}-${s.no}" aria-label="聽中文 ${s.zh}">🀄 中</button>`:""}
         <button class="btn-s sc-r" data-scrone="${s.vol}-${s.no}" aria-label="錄 ${s.zh}">● 錄</button>
         <button class="btn-s" data-scpb="${s.vol}-${s.no}" disabled aria-label="回放 ${s.zh}">▶ 回放</button>
       </span></li>`).join("")}</ol>
@@ -1694,7 +1702,9 @@ function renderSong(){
   const kc=d.kc==="r"?"var(--mark-red)":d.kc==="b"?"var(--mark-blue)":"var(--ink)";
   const essay = d.essay ? d.essay.split("\n").filter(x=>x.trim()).map(p=>`<p>${esc(p)}</p>`).join("") : `<div class="placeholder soon">📖 短文準備中，敬請期待</div>`;
   const fullNote = !d.audio&&FULL_AUDIO["v"+vol] ? (CHAPTERS["v"+vol].length===arr.length?`<button class="btn" data-fch="v${vol}:${no-1}" data-fchsong="1">▶ 播放本首示範</button><audio controls preload="metadata" src="${FULL_AUDIO["v"+vol]}" data-full="v${vol}" hidden></audio>`:`<p class="muted small">本冊的真人示範是一整段全冊音檔，請到<button class="btn-s" data-target="v${vol}">${VOLS["v"+vol].short}曲目頁</button>上方「🎧 全冊示範音檔」播放。</p>`) : "";
-  const audio = fullNote ? fullNote : d.audio ? `<audio controls preload="none" src="${esc(d.audio)}" style="width:100%"></audio><div class="row"><span class="muted" style="font-size:.88rem">播放速度</span>${[0.75,1,1.25].map(r=>`<button class="seg" data-rate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</div>` : `<div class="placeholder soon">🎧 示範音檔準備中，先按上方 🔊 聽關鍵句</div>`;
+  const trk=(src,lbl,cls)=>`<div class="trk ${cls}"><div class="trk-h"><b>${lbl}</b><span class="trk-r">${[0.75,1,1.25].map(r=>`<button class="seg" data-arate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</span></div><audio controls preload="metadata" src="${esc(src)}"></audio></div>`;
+  const audio = (d.audio||d.zh) ? (d.audio?trk(d.audio,"🔤 英文示範（正常速度）","en"):"")+(d.zh?trk(d.zh,"🀄 "+(d.zhLabel||"中文翻譯"),"zh"):"")+(FULL_AUDIO["v"+vol]?`<p class="muted small">想一次聽完整冊？到<button class="btn-s" data-target="v${vol}">${VOLS["v"+vol].short}曲目頁</button>播放「🎧 全冊示範音檔」。</p>`:"")
+    : fullNote ? fullNote : `<div class="placeholder soon">🎧 示範音檔準備中，先按上方 🔊 聽關鍵句</div>`;
   const lyr = s[2] ? `<div class="lyrics">${esc(s[2])}</div><div class="row"><button class="btn ghost" data-say="${esc(s[2])}">🔊 朗讀歌詞</button><button class="btn ghost" data-markly="${vol}-${no}">✎ 拿去劃記</button></div>` : `<div class="placeholder soon">🎵 歌詞準備中，敬請期待</div>`;
   $("#song").style.setProperty("--vc",`var(--v-v${vol})`);
   $("#song").innerHTML=`
@@ -2525,6 +2535,8 @@ function scMsg(k,txt){const m=$(`[data-scmsg="${k}"]`);if(m)m.textContent=txt||"
 function scBusy(){return SC.rec&&SC.rec.state==="recording"}
 document.addEventListener("click",async e=>{
   const p=e.target.closest("[data-scplay]");if(p){scPlayAll(p.dataset.scplay);return}
+  const z1=e.target.closest("[data-sczh1]");if(z1){scStopSeq();zhStop();const [v,n]=z1.dataset.sczh1.split("-");const a=new Audio(DETAIL[`v${v}-${pad(n)}`].zh);SC.audio=a;
+    const row=$(`[data-scrow="${z1.dataset.sczh1}"]`);$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));if(row)row.classList.add("playing");a.onended=()=>row&&row.classList.remove("playing");a.play();return}
   const one=e.target.closest("[data-scone]");if(one){scStopSeq();SC.withZh=false;scSpeakOne(one.dataset.scone);return}
   const pb=e.target.closest("[data-scpb]");if(pb){const u=SC.blobs[pb.dataset.scpb];if(u){scStopSeq();const a=new Audio(u);fixDur(a);a.play()}return}
   const whole=e.target.closest("[data-screc]");
@@ -2561,6 +2573,10 @@ function zhAll(k){
   const seq={k,stop:false};ZH.seq=seq;$$(`[data-sczhall="${k}"]`).forEach(b=>b.classList.add("on"));
   scMsg(k,"▶ 正在唸中文全曲，再點一次 ▶ 停止");
   if(SCROLL_AUDIO[k]){const a=new Audio(SCROLL_AUDIO[k]);seq.audio=a;a.onended=zhStop;a.play().catch(()=>{seq.audio=null;tts()});return}
+  const list=songsOf(k),zf=list.map(s=>(DETAIL[`v${s.vol}-${pad(s.no)}`]||{}).zh);
+  if(zf.every(Boolean)){let i=0;const nx=()=>{if(seq.stop)return;$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));if(i>=list.length){zhStop();return}
+      const s=list[i],row=$(`[data-scrow="${s.vol}-${s.no}"]`);if(row){row.classList.add("playing");row.scrollIntoView({behavior:"smooth",block:"nearest"})}
+      const a=new Audio(zf[i++]);seq.audio=a;a.onended=()=>setTimeout(nx,500);a.onerror=nx;a.play().catch(nx)};nx();return}
   tts();
   function tts(){
     if(!("speechSynthesis" in window)){scMsg(k,"這個瀏覽器不支援語音朗讀。");return}
@@ -2579,6 +2595,14 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("click",e=>{if(e.target.closest("[data-screc]"))setTimeout(()=>$$("[data-scmic]").forEach(x=>x.classList.toggle("rec",scBusy()&&SC.key==="all-"+x.dataset.scmic)),400)});
 
+
+
+/* 曲目頁音軌：各自調速、互斥播放 */
+document.addEventListener("click",e=>{const b=e.target.closest("[data-arate]");if(!b)return;const box=b.closest(".trk"),a=box&&box.querySelector("audio");if(a)a.playbackRate=+b.dataset.arate;
+  box.querySelectorAll("[data-arate]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+document.addEventListener("play",e=>{const a=e.target;if(!(a instanceof HTMLMediaElement))return;
+  document.querySelectorAll("audio").forEach(o=>{if(o!==a&&!o.paused)o.pause()});
+  if(typeof READER!=="undefined"&&READER.active)stopReading();try{speechSynthesis.cancel()}catch(err){}},true);
 
 /* ---------- 全冊示範音檔 ---------- */
 function fullEl(k){return $(`audio[data-full="${k}"]`)}
