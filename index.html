@@ -564,6 +564,44 @@ footer{background:#1d3566}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
 /* 卷軸朗讀錄音 */
+/* 句子語音練習 */
+.vl-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.vl-acc .seg{font-weight:700}
+.vl-lines{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;padding-right:4px}
+.vl-line{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--fg);font-family:var(--f-en);font-size:.92rem}
+.vl-line b{color:var(--vc,var(--rose));font-variant-numeric:tabular-nums}
+.vl-line i{color:var(--mark-red);font-style:normal;font-size:.7rem}
+.vl-line.on{border-color:var(--vc,var(--ink));box-shadow:0 0 0 2px var(--vc,var(--ink));background:var(--tint)}
+.vl-card{display:grid;gap:12px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--tint)}
+.vl-text{font-size:clamp(1.15rem,3vw,1.45rem);font-weight:600;color:var(--ink);line-height:1.5}
+.vl-speeds{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.vl-sp{border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:12px;padding:10px 6px;cursor:pointer;font-weight:700;font-size:.9rem;display:grid;gap:2px;justify-items:center;min-height:64px}
+.vl-sp b{font-size:1.2rem}
+.vl-sp:hover{background:var(--gold-soft)}
+.vl-sp.playing{background:var(--ink);color:var(--paper)}
+@media (max-width:520px){.vl-speeds{grid-template-columns:1fr 1fr}}
+.vl-acts{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:520px){.vl-acts{display:grid;grid-template-columns:1fr 1fr}.vl-acts .btn{justify-content:center;font-size:.88rem;padding-inline:8px;white-space:nowrap}.vl-sent{font-size:1.05rem}}
+.vl-exp summary{cursor:pointer;font-weight:700;color:var(--ink)}
+.vl-sent{font-family:var(--f-en);font-size:1.2rem;line-height:2.4;margin-top:10px;padding:10px 12px;background:var(--paper);border-radius:10px;border:1px solid var(--line)}
+.vl-w{display:inline;padding:1px 2px;border-radius:4px;cursor:help}
+.vl-w.v-st{font-weight:700;border-bottom:3px solid var(--gold)}
+.vl-w.v-nuc{font-weight:800;background:var(--gold-soft);border-bottom:3px solid var(--mark-red)}
+.vl-w.v-wk{color:var(--muted);font-size:.86em;border-bottom:2px dotted var(--muted)}
+.vl-w.v-fl{box-shadow:inset 0 -6px 0 rgba(79,154,104,.35)}
+.vl-w.on{outline:2px solid var(--mark-blue);background:rgba(47,111,181,.15)}
+.vl-g{font-weight:800;margin:0 -2px;cursor:help}
+.vl-g.link{color:var(--mark-blue)}.vl-g.lr{color:var(--mark-blue)}.vl-g.asm{color:var(--mark-green)}.vl-g.eli{color:var(--rose)}
+.vl-into{font-size:1.4rem;color:var(--mark-red);font-weight:800}
+.vl-notes{margin:8px 0;padding-left:1.2em;display:grid;gap:4px;font-size:.92rem}
+.vl-notes i{font-family:var(--f-en)}
+.k-nuc{color:var(--mark-red)}.k-wk{color:var(--muted)}.k-link,.k-lr{color:var(--mark-blue)}.k-asm,.k-fl{color:var(--mark-green)}.k-eli{color:var(--rose)}
+.vl-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
+.vl-legend span{display:inline-flex;align-items:center;gap:4px}
+.lg{display:inline-block;width:16px;height:10px;border-radius:2px}
+.lg.st{border-bottom:3px solid var(--gold)}.lg.nuc{background:var(--gold-soft);border-bottom:3px solid var(--mark-red)}.lg.wk{border-bottom:2px dotted var(--muted)}.lg.fl{background:rgba(79,154,104,.35)}
+.vl-warn{font-size:.8rem;color:var(--muted);margin-top:6px}
+.vl-src{line-height:1.6}
 .trk{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--tint)}
 .trk+.trk{margin-top:8px}
 .trk.en{border-left:4px solid var(--mark-blue)}.trk.zh{border-left:4px solid var(--mark-red)}
@@ -1355,6 +1393,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       <div class="fn"><b>認證總覽</b><p>四個項目的限時與聲音數、認證流程、童謠認證示範影片。</p></div>
       <div class="fn"><b>精選六首／第一～三冊</b><p>封面、統計、曲目清單與卷軸。點曲名進入曲目頁；🔊 朗讀英文曲名。</p></div>
       <div class="fn"><b>曲目頁</b><p>注音積木圖、關鍵字與關鍵句、音檔（可調速）、跟讀錄音、短文、歌詞，可切換上一首／下一首。</p></div>
+      <div class="fn"><b>🎙 句子語音練習</b><p>曲目頁下方逐句練習：切換美式／英式口音，選逐字、慢速 75%、一般 100%、快速 120% 四種語速聽示範；展開「自然語流解析」看可能的重音、弱讀、連音、同化、省音與語調；錄下自己唸，和示範對照回放。</p></div>
       <div class="fn"><b>♪ 歡唱童謠</b><p>兩個播放清單可切換：歌唱學童謠第一冊（14 首）、SoR 第五階段文意理解（9 支）；附歡唱三步驟與每日歡唱次數紀錄。</p></div>
       <div class="fn"><b>筆記本</b><p>三種方格紙，可打字、手寫（紅藍綠筆、橡皮擦、復原），還有 18 張童謠小夥伴貼圖可拖曳、縮放；分成重點摘要、心得分享、塗鴉，自動儲存，可存成圖片。</p></div>
       <div class="fn"><b>★ 重點複習</b><p>星號曲目一輪一輪洗牌練習：先看中文曲名與積木圖自己唸，再翻開核對、聽示範，標記會了或再練。備份可匯出、匯入，跨裝置接著學。</p></div>
@@ -1608,7 +1647,7 @@ function speak(text){
   if(!("speechSynthesis" in window)) return;
   if(typeof READER!=="undefined"&&READER.active) stopReading();
   speechSynthesis.cancel(); clearInterval(ttsTimer);
-  const u=new SpeechSynthesisUtterance(text); if(voice) u.voice=voice; u.lang="en-US"; u.rate=.9;
+  const u=new SpeechSynthesisUtterance(text); const ac=(typeof VL!=="undefined")?VL.acc:"us", vv=(typeof bestVoice==="function")?(bestVoice(ac)||voice):voice; if(vv) u.voice=vv; u.lang=ac==="uk"?"en-GB":"en-US"; u.rate=.9;
   u.onend=u.onerror=()=>clearInterval(ttsTimer);
   setTimeout(()=>{speechSynthesis.speak(u);ttsTimer=setInterval(()=>{if(!speechSynthesis.speaking)clearInterval(ttsTimer);else{speechSynthesis.pause();speechSynthesis.resume()}},10000)},60);
 }
@@ -1738,6 +1777,7 @@ function renderSong(){
       </div>
     </div>
   </div>
+  <div class="sheet vlab" id="vlab"></div>
   <div class="sheet prose-s"><span class="pill">短文</span>${essay}</div>
   <div class="sheet"><span class="pill">歌詞</span>${lyr}</div>
   <div class="song-nav">
@@ -1745,7 +1785,8 @@ function renderSong(){
     ${next?`<button class="btn" data-song="${vol}-${no+1}">${next[0]} ›</button>`:`<button class="btn" data-target="v${vol}">回到曲目清單</button>`}
   </div>`;
 
-  if(typeof paintStars==="function") paintStars();}
+  if(typeof paintStars==="function") paintStars();
+  if(typeof vlRender==="function") vlRender(vol,no);}
 document.addEventListener("click",e=>{
   const s=e.target.closest("[data-song]"); if(s){e.preventDefault();const [v,n]=s.dataset.song.split("-");openSong(v,n);return}
   const r=e.target.closest("[data-rate]"); if(r){const a=$("#song audio");if(a)a.playbackRate=+r.dataset.rate;$$("[data-rate]").forEach(b=>b.setAttribute("aria-pressed",b===r))}
@@ -2603,6 +2644,147 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-arate]");i
 document.addEventListener("play",e=>{const a=e.target;if(!(a instanceof HTMLMediaElement))return;
   document.querySelectorAll("audio").forEach(o=>{if(o!==a&&!o.paused)o.pause()});
   if(typeof READER!=="undefined"&&READER.active)stopReading();try{speechSynthesis.cancel()}catch(err){}},true);
+
+/* ---------- 句子語音練習（雙口音・四段語速・自然語流解析・錄音比較） ---------- */
+const VL={acc:store.get("acc","us"),line:0,lines:[],song:null,rec:null,stream:null,mine:{},tok:0,mode:null};
+const ACC={us:{lang:"en-US",flag:"🇺🇸",lbl:"美式 English (US)"},uk:{lang:"en-GB",flag:"🇬🇧",lbl:"英式 English (UK)"}};
+const SPEEDS=[{k:"word",n:"①",t:"逐字朗讀",r:.9},{k:"slow",n:"②",t:"慢速清楚 75%",r:.75},{k:"nat",n:"③",t:"一般語速 100%",r:1},{k:"fast",n:"④",t:"快速自然 120%",r:1.2}];
+/* 依口音挑最自然的系統語音：優先 Natural／Neural／Google／Premium 等高品質語音 */
+function bestVoice(acc){
+  if(!("speechSynthesis" in window))return null;
+  const lang=ACC[acc].lang,vs=speechSynthesis.getVoices().filter(v=>v.lang.replace("_","-").toLowerCase()===lang.toLowerCase());
+  const score=v=>{const n=v.name;let s=0;
+    if(/Natural|Neural|Online/i.test(n))s+=50; if(/Premium|Enhanced/i.test(n))s+=40; if(/^Google/i.test(n))s+=30;
+    if(acc==="us"&&/Samantha|Aria|Jenny|Ava|Allison/i.test(n))s+=15; if(acc==="uk"&&/Daniel|Sonia|Libby|Serena|Kate|Arthur/i.test(n))s+=15;
+    if(/Compact|eSpeak/i.test(n))s-=30; if(v.localService===false)s+=5; return s};
+  return vs.sort((a,b)=>score(b)-score(a))[0]||null;
+}
+function vlUtter(text,rate){const u=new SpeechSynthesisUtterance(text),v=bestVoice(VL.acc);u.lang=ACC[VL.acc].lang;if(v)u.voice=v;u.rate=rate;u.pitch=1;return u}
+function vlStop(){VL.tok++;try{speechSynthesis.cancel()}catch(e){}$$(".vl-w.on").forEach(w=>w.classList.remove("on"));$$("[data-vsp]").forEach(b=>b.classList.remove("playing"));VL.mode=null}
+function vlSpeak(mode){
+  if(!("speechSynthesis" in window)){vlNote("這個瀏覽器不支援語音朗讀，請改用 Chrome、Safari 或 Edge。");return}
+  const same=VL.mode===mode;vlStop();if(same)return;
+  if(typeof READER!=="undefined"&&READER.active)stopReading();document.querySelectorAll("audio").forEach(a=>a.pause());
+  const line=VL.lines[VL.line];if(!line)return;const sp=SPEEDS.find(s=>s.k===mode),tok=VL.tok;VL.mode=mode;
+  const btn=$(`[data-vsp="${mode}"]`);if(btn)btn.classList.add("playing");
+  const done=()=>{if(tok!==VL.tok)return;if(btn)btn.classList.remove("playing");VL.mode=null};
+  if(mode==="word"){
+    const words=vlWords(line);let i=0;
+    const next=()=>{if(tok!==VL.tok)return;$$(".vl-w.on").forEach(w=>w.classList.remove("on"));if(i>=words.length){done();return}
+      const el=$(`.vl-w[data-wi="${i}"]`);if(el)el.classList.add("on");
+      const u=vlUtter(words[i].clean,sp.r);i++;u.onend=()=>setTimeout(next,650);u.onerror=()=>setTimeout(next,650);speechSynthesis.speak(u)};
+    setTimeout(next,60);return;
+  }
+  const u=vlUtter(line.replace(/[;:]/g,","),sp.r);u.onend=done;u.onerror=done;
+  setTimeout(()=>{if(tok===VL.tok)speechSynthesis.speak(u)},60);
+}
+function vlNote(t){const n=$("#vlNote");if(n)n.textContent=t||""}
+
+const GAPN={link:"連音",lr:"linking R",asm:"同化",eli:"省音"};
+/* ---- 自然語流解析：依拼字規則推測「可能發生」的語音現象 ---- */
+const FUNC=new Set("if a an the to for and of at as but or can could was were are is am be been has have had do does did you your he him his she her it its we us our they them their me my i in on by with from some than that this so not shall should would will i'm you're it's we're they're he's she's you'll i'll there's that's".split(" "));
+const STRONG_END=new Set(["you","me","him","her","them","us","it","i","my"]);
+function vlWords(line){return line.split(/\s+/).filter(Boolean).map((raw,i)=>({raw,i,clean:raw.replace(/^[“"'‘(]+|[”"’),.;:!?…]+$/g,"").replace(/’/g,"'"),lc:raw.replace(/’/g,"'").replace(/[^A-Za-z']/g,"").toLowerCase()}))}
+const VOW=/^[aeiou]/i, CONS=/[bcdfghjklmnpqrstvwxz]$/i;
+function endSound(w){const s=w.lc.replace(/'s$/,"s");if(!s)return"";
+  if(/[^aeiou]e$/.test(s)&&!/(le|re)$/.test(s)&&s.length>2)return s.slice(-2,-1); // silent e：make → k
+  if(/(le)$/.test(s))return"l"; if(/(re|r)$/.test(s))return"r"; if(/(gh)$/.test(s))return"V"; if(/[aeiouy]$/.test(s))return"V"; return s.slice(-1)}
+function startsVowel(w){const s=w.lc;if(!s)return false;if(/^(hour|honest|heir)/.test(s))return true;if(/^(u[nsr]i|one|once|eu)/.test(s))return false;return VOW.test(s)}
+function vlAnalyze(line,acc){
+  const W=vlWords(line),marks=W.map(()=>({}));const gaps=[];
+  const punctAfter=w=>/[,.;:!?]$/.test(w.raw.replace(/[”"’)]+$/,""));
+  for(let i=0;i<W.length-1;i++){
+    const a=W[i],b=W[i+1];if(punctAfter(a))continue;
+    const e=endSound(a),bv=startsVowel(b);
+    if(bv&&e==="r"&&acc==="uk")gaps.push({i,t:"lr",tip:"linking R（英式）：字尾 r 平常不發音，但下一字以母音開頭時會唸出 /r/ 連過去"});
+    else if(bv&&e&&e!=="V")gaps.push({i,t:"link",tip:"子音＋母音連音：前一字的尾音直接接到下一字"});
+    else if(bv&&e==="V")gaps.push({i,t:"link",tip:"母音＋母音：中間可能滑出輕微的 /j/ 或 /w/，讓兩字連在一起"});
+    if(/^(you|your|yourself)$/.test(b.lc)&&/[td]$/.test(a.lc.replace(/'t$/,"t")))gaps.push({i,t:"asm",tip:`同化：${a.clean} + ${b.clean}，/t/＋/j/ 可能變 /tʃ/、/d/＋/j/ 可能變 /dʒ/`});
+    if(/(st|ct|ft|pt|nd|ld)$/.test(a.lc)&&!bv&&b.lc&&!/^[hy]/.test(b.lc))gaps.push({i,t:"eli",tip:`省音：${a.clean} 字尾 t／d 夾在子音之間，口語中可能省略`});
+  }
+  // 字內 flap T（美式）
+  W.forEach((w,i)=>{if(acc==="us"&&/[aeiouy]r?tt?(le|er|y|ie|ies|ing|ed|a)s?$/.test(w.lc))marks[i].flap=true;
+    if(acc==="us"&&i<W.length-1&&!punctAfter(w)&&/[aeiou]t$/.test(w.lc)&&startsVowel(W[i+1]))marks[i].flap=true});
+  // 重音：內容詞可能重讀；功能詞可能弱讀（句尾代名詞與句首疑問詞除外）
+  let lastContent=-1;
+  W.forEach((w,i)=>{const isEnd=i===W.length-1||punctAfter(w);
+    if(FUNC.has(w.lc)&&!(isEnd&&STRONG_END.has(w.lc))&&!(i===0&&/^(how|what|where|why|who|which|can|do|does|did|have|is|are|was|me)$/.test(w.lc)))marks[i].weak=true;
+    else if(w.lc){marks[i].stress=true;lastContent=i}});
+  if(lastContent>=0)marks[lastContent].nuc=true;
+  // 語調
+  const end=line.trim().slice(-1),first=W[0]?W[0].lc:"";let into;
+  if(end==="?")into=/^(how|what|where|why|who|which|whose|when)$/.test(first)?{a:"↘",t:"Wh- 疑問句，句尾通常下降"}:{a:"↗",t:"Yes/No 疑問句，句尾常上揚（也可能依語氣下降）"};
+  else if(end==="!")into={a:"↘",t:"驚嘆或鼓勵，重音字拉高後明顯下降"};
+  else if(end===","||end===";")into={a:"→",t:"句子未完，句尾持平或微升，提示還有下文"};
+  else into={a:"↘",t:"陳述句，句尾下降"};
+  return {W,marks,gaps,into};
+}
+function vlExplore(){
+  const line=VL.lines[VL.line];if(!line)return"";
+  const {W,marks,gaps,into}=vlAnalyze(line,VL.acc),g={};gaps.forEach(x=>(g[x.i]=g[x.i]||[]).push(x));
+  const html=W.map((w,i)=>{const m=marks[i],cls=["vl-w",m.stress?"v-st":"",m.nuc?"v-nuc":"",m.weak?"v-wk":"",m.flap?"v-fl":""].join(" ");
+    const tips=[m.nuc?"主要句子重音（最可能的語意焦點）":m.stress?"內容詞，可能重讀":"",m.weak?"功能詞，可能弱讀（母音弱化成 /ə/）":"",m.flap?"flap T（美式）：t 在母音之間可能變成輕彈的 /ɾ/，聽起來像輕 d":""].filter(Boolean).join("；");
+    const gap=(g[i]||[]).map(x=>`<span class="vl-g ${x.t}" title="${x.tip}">${x.t==="lr"?"r‿":x.t==="asm"?"⇢":x.t==="eli"?"⌁":"‿"}</span>`).join("");
+    return `<span class="${cls}" data-wi="${i}" title="${tips}">${esc(w.raw)}</span>${gap}`}).join(" ");
+  const notes=[];
+  if(W.some((w,i)=>marks[i].nuc)){const i=marks.findIndex(m=>m.nuc);notes.push(`<li><b class="k-nuc">主要重音</b>：<b>${esc(W[i].clean)}</b> 最可能是這句的語意焦點，音高最明顯。</li>`)}
+  const wk=W.filter((w,i)=>marks[i].weak).map(w=>w.clean);if(wk.length)notes.push(`<li><b class="k-wk">可能弱讀</b>：${wk.map(esc).join("、")}——功能詞在一般語速下常唸得又短又輕。</li>`);
+  gaps.forEach(x=>notes.push(`<li><b class="k-${x.t}">${GAPN[x.t]}</b>：<i>${esc(W[x.i].clean)} ${esc(W[x.i+1].clean)}</i>——${x.tip.split("：").slice(1).join("：")||x.tip}</li>`));
+  const fl=W.filter((w,i)=>marks[i].flap).map(w=>w.clean);if(fl.length)notes.push(`<li><b class="k-fl">flap T</b>：${fl.map(esc).join("、")}——美式口語中 t 可能輕彈成近似 d 的聲音。</li>`);
+  notes.push(`<li><b>語調 ${into.a}</b>：${into.t}。</li>`);
+  return `<div class="vl-sent">${html} <span class="vl-into">${into.a}</span></div>
+    <ul class="vl-notes">${notes.join("")}</ul>
+    <div class="vl-legend"><span><i class="lg st"></i>可能重讀</span><span><i class="lg nuc"></i>主要重音</span><span><i class="lg wk"></i>可能弱讀</span><span><b>‿</b> 連音</span>${VL.acc==="uk"?"<span><b>r‿</b> linking R</span>":"<span><i class=\"lg fl\"></i>flap T</span>"}<span><b>⇢</b> 同化</span><span><b>⌁</b> 省音</span><span><b>↗↘→</b> 語調</span></div>
+    <p class="vl-warn">⚠ 以上是依拼字與語法規則推測「可能發生」的語音現象，未與音檔逐一比對；實際是否連音、弱化，請以耳朵聽到的真人示範為準。</p>`;
+}
+function vlRender(vol,no){
+  const s=SONGS["v"+vol][no-1],box=$("#vlab");if(!box)return;
+  VL.song=`${vol}-${no}`;VL.lines=(s[2]||s[1]).split("\n").map(x=>x.trim()).filter(Boolean);VL.line=Math.max(0,Math.min(VL.line,VL.lines.length-1));if(VL.song!==box.dataset.vsong){VL.line=0;VL.mine={}}box.dataset.vsong=VL.song;
+  const ex0=$(".vl-exp",box);if(ex0)store.set("vlExp",ex0.open);
+  const v=bestVoice(VL.acc),hasUK=!!bestVoice("uk");
+  box.innerHTML=`
+  <div class="sec-head"><span class="pill">🎙 句子語音練習</span><span class="muted small">Listen → Notice → Imitate → Record → Compare → Express</span></div>
+  <div class="vl-bar">
+    <div class="segs vl-acc" role="group" aria-label="口音">${Object.entries(ACC).map(([k,a])=>`<button class="seg" data-vacc="${k}" aria-pressed="${VL.acc===k}">${a.flag} ${a.lbl}</button>`).join("")}</div>
+    <span class="muted small">語音：${v?esc(v.name):"系統預設"}${VL.acc==="uk"&&!hasUK?"（這台裝置沒有英式語音，會用其他英語語音代替）":""}</span>
+  </div>
+  <div class="vl-lines">${VL.lines.map((l,i)=>`<button class="vl-line${i===VL.line?" on":""}" data-vline="${i}"><b>${i+1}</b><span>${esc(l)}</span>${VL.mine[i]?'<i title="已錄音">●</i>':""}</button>`).join("")}</div>
+  <div class="vl-card">
+    <div class="vl-cur"><span class="muted small">第 ${VL.line+1} / ${VL.lines.length} 句</span><div class="vl-text en">${esc(VL.lines[VL.line]||"")}</div></div>
+    <div class="vl-speeds">${SPEEDS.map(sp=>`<button class="vl-sp" data-vsp="${sp.k}"><b>${sp.n}</b>${sp.t}</button>`).join("")}</div>
+    <div class="vl-acts">
+      <button class="btn rose" id="vlRec">● 錄音</button>
+      <button class="btn" id="vlMine" ${VL.mine[VL.line]?"":"disabled"}>▶ 回放我的錄音</button>
+      <button class="btn ghost" id="vlStd">🔁 重播標準示範</button>
+      <button class="btn ghost" id="vlNext">下一句 →</button>
+    </div>
+    <p class="muted small" id="vlNote" role="status"></p>
+    <details class="vl-exp" ${store.get("vlExp",false)?"open":""}><summary>🔍 Connected Speech Explorer｜自然語流解析</summary><div id="vlExp">${vlExplore()}</div></details>
+  </div>
+  <p class="muted small vl-src">示範來源：句子示範使用這台裝置的瀏覽器語音（${VL.acc==="us"?"en-US":"en-GB"}），四種語速都是以語音合成直接產生，不是把音檔加速或放慢，音高不會跑掉；但連音與弱化程度取決於裝置內建語音的品質，不一定像真人。${(DETAIL[`v${vol}-${pad(no)}`]||{}).audio?"真人英文示範（美式・正常速度）請聽上方「音檔」。":""}錄音只留在這台裝置，不會上傳，也不會打分數，請自己比較聽聽看。</p>`;
+}
+document.addEventListener("click",async e=>{
+  const a=e.target.closest("[data-vacc]");if(a){vlStop();VL.acc=a.dataset.vacc;store.set("acc",VL.acc);pickVoice();const [v,n]=VL.song.split("-");vlRender(+v,+n);return}
+  const l=e.target.closest("[data-vline]");if(l){vlStop();VL.line=+l.dataset.vline;const [v,n]=VL.song.split("-");vlRender(+v,+n);return}
+  const sp=e.target.closest("[data-vsp]");if(sp){VL.last=sp.dataset.vsp;vlSpeak(sp.dataset.vsp);return}
+  if(e.target.closest("#vlStd")){vlSpeak(VL.last||"nat");return}
+  if(e.target.closest("#vlNext")){vlStop();VL.line=(VL.line+1)%VL.lines.length;const [v,n]=VL.song.split("-");vlRender(+v,+n);return}
+  if(e.target.closest("#vlMine")){const u=VL.mine[VL.line];if(u){vlStop();const au=new Audio(u);fixDur(au);au.play()}return}
+  if(e.target.closest("#vlRec")){
+    const b=$("#vlRec");if(VL.rec&&VL.rec.state==="recording"){VL.rec.stop();return}
+    vlStop();
+    try{if(typeof MediaRecorder==="undefined")throw new Error("nomr");
+      VL.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+      const ch=[],mime=pickMime("audio"),li=VL.line;VL.rec=new MediaRecorder(VL.stream,mime?{mimeType:mime}:undefined);
+      VL.rec.ondataavailable=ev=>ev.data.size&&ch.push(ev.data);
+      VL.rec.onstop=()=>{VL.stream.getTracks().forEach(t=>t.stop());if(VL.mine[li])URL.revokeObjectURL(VL.mine[li]);VL.mine[li]=URL.createObjectURL(new Blob(ch,{type:VL.rec.mimeType||mime||"audio/webm"}));VL.rec=null;
+        const [v,n]=VL.song.split("-");store.set(`cnt-v${v}-${pad(n)}`,store.get(`cnt-v${v}-${pad(n)}`,0)+1);vlRender(+v,+n);vlNote("錄好了！先按「🔁 重播標準示範」，再按「▶ 回放我的錄音」，比較兩者的重音、連音和語調。")};
+      VL.rec.start(200);b.innerHTML='<span class="recdot"></span> 停止錄音';vlNote("錄音中…唸完按「停止錄音」");
+    }catch(err){vlNote(err.message==="nomr"?"這個瀏覽器不支援錄音，請改用新版 Safari 或 Chrome。":mediaErr(err))}
+  }
+});
+document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("vl-exp"))store.set("vlExp",e.target.open)},true);
+if("speechSynthesis" in window)speechSynthesis.addEventListener("voiceschanged",()=>{if(VL.song&&!$("#song").hidden){const [v,n]=VL.song.split("-");vlRender(+v,+n)}});
 
 /* ---------- 全冊示範音檔 ---------- */
 function fullEl(k){return $(`audio[data-full="${k}"]`)}
