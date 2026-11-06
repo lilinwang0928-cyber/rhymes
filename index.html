@@ -563,6 +563,15 @@ footer{background:#1d3566}
   .go-l{font-size:.8rem}
 }
 .placeholder.soon{background:var(--tint);border-style:solid;border-color:var(--line);color:var(--muted)}
+/* 童謠團練 */
+.team-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.team-tabs .seg{font-weight:700;white-space:nowrap;padding-inline:6px}
+.team-tabs .seg[aria-pressed="true"]{background:var(--vc);border-color:var(--vc);color:#fff}
+.team-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:6px}
+.team-it{display:grid;grid-template-columns:28px 1fr;column-gap:8px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:6px 10px;cursor:pointer;color:var(--fg)}
+.team-it:hover{border-color:var(--vc);background:var(--tint)}
+.team-it b{grid-row:span 2;color:var(--vc);font-family:var(--f-en);align-self:center}
+.team-it span{font-family:var(--f-display);font-weight:700}
+.team-it small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 卷軸朗讀錄音 */
 /* 句子語音練習 */
 .vl-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
@@ -709,9 +718,9 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
     <button class="bar-btn" id="reloadBtn" aria-label="重新整理頁面">↻<span class="hide-s"> 重新整理</span></button>
     <button class="bar-btn theme-btn" id="themeBtn" aria-label="切換深淺色">◐</button>
   </div>
-  <div class="menu" id="menu" hidden><div class="wrap menu-grid"><div class="mg"><h4>總覽</h4><div class="mg-items"><button class="mtab" data-target="home">認證總覽</button></div></div><div class="mg"><h4>曲目</h4><div class="mg-items"><button class="mtab" data-target="pick">精選六首</button><button class="mtab" data-target="v1">第一冊</button><button class="mtab" data-target="v2">第二冊</button><button class="mtab" data-target="v3">第三冊</button><button class="mtab" data-target="sing">♪ 歡唱童謠</button></div></div><div class="mg"><h4>練習</h4><div class="mg-items"><button class="mtab" data-target="plan">練習日程</button><button class="mtab" data-target="review">★ 重點複習</button><button class="mtab" data-target="mark">劃記練習</button><button class="mtab" data-target="note">筆記本</button></div></div><div class="mg"><h4>錄製</h4><div class="mg-items"><button class="mtab" data-target="rec">錄製準備</button><button class="mtab" data-target="mocka">模擬錄音</button><button class="mtab" data-target="mockv">模擬錄影</button><button class="mtab tab-rec" data-target="formal">● 正式錄影</button></div></div><div class="mg"><h4>報名</h4><div class="mg-items"><button class="mtab" data-target="time">報名時程</button><button class="mtab" data-target="rules">評分規範</button></div></div><div class="mg"><h4>說明</h4><div class="mg-items"><button class="mtab" data-target="help">使用說明</button><button class="mtab" data-target="pre">序言後記</button></div></div></div></div>
+  <div class="menu" id="menu" hidden><div class="wrap menu-grid"><div class="mg"><h4>總覽</h4><div class="mg-items"><button class="mtab" data-target="home">認證總覽</button></div></div><div class="mg"><h4>曲目</h4><div class="mg-items"><button class="mtab" data-target="pick">精選六首</button><button class="mtab" data-target="v1">第一冊</button><button class="mtab" data-target="v2">第二冊</button><button class="mtab" data-target="v3">第三冊</button><button class="mtab" data-target="sing">♪ 歡唱童謠</button><button class="mtab" data-target="team">🎶 童謠團練</button></div></div><div class="mg"><h4>練習</h4><div class="mg-items"><button class="mtab" data-target="plan">練習日程</button><button class="mtab" data-target="review">★ 重點複習</button><button class="mtab" data-target="mark">劃記練習</button><button class="mtab" data-target="note">筆記本</button></div></div><div class="mg"><h4>錄製</h4><div class="mg-items"><button class="mtab" data-target="rec">錄製準備</button><button class="mtab" data-target="mocka">模擬錄音</button><button class="mtab" data-target="mockv">模擬錄影</button><button class="mtab tab-rec" data-target="formal">● 正式錄影</button></div></div><div class="mg"><h4>報名</h4><div class="mg-items"><button class="mtab" data-target="time">報名時程</button><button class="mtab" data-target="rules">評分規範</button></div></div><div class="mg"><h4>說明</h4><div class="mg-items"><button class="mtab" data-target="help">使用說明</button><button class="mtab" data-target="pre">序言後記</button></div></div></div></div>
 </header>
-<nav class="tabstrip" aria-label="分頁"><div class="wrap"><div class="tabs" id="tabs" role="tablist"><div class="tg"><span class="tgl">總覽</span><button class="tab" data-target="home">認證總覽</button></div><div class="tg"><span class="tgl">曲目</span><button class="tab" data-target="pick">精選六首</button><button class="tab" data-target="v1">第一冊</button><button class="tab" data-target="v2">第二冊</button><button class="tab" data-target="v3">第三冊</button><button class="tab" data-target="sing">♪ 歡唱童謠</button></div><div class="tg"><span class="tgl">練習</span><button class="tab" data-target="plan">練習日程</button><button class="tab" data-target="review">★ 重點複習</button><button class="tab" data-target="mark">劃記練習</button><button class="tab" data-target="note">筆記本</button></div><div class="tg"><span class="tgl">錄製</span><button class="tab" data-target="rec">錄製準備</button><button class="tab" data-target="mocka">模擬錄音</button><button class="tab" data-target="mockv">模擬錄影</button><button class="tab tab-rec" data-target="formal">● 正式錄影</button></div><div class="tg"><span class="tgl">報名</span><button class="tab" data-target="time">報名時程</button><button class="tab" data-target="rules">評分規範</button></div><div class="tg"><span class="tgl">說明</span><button class="tab" data-target="help">使用說明</button><button class="tab" data-target="pre">序言後記</button></div></div></div></nav>
+<nav class="tabstrip" aria-label="分頁"><div class="wrap"><div class="tabs" id="tabs" role="tablist"><div class="tg"><span class="tgl">總覽</span><button class="tab" data-target="home">認證總覽</button></div><div class="tg"><span class="tgl">曲目</span><button class="tab" data-target="pick">精選六首</button><button class="tab" data-target="v1">第一冊</button><button class="tab" data-target="v2">第二冊</button><button class="tab" data-target="v3">第三冊</button><button class="tab" data-target="sing">♪ 歡唱童謠</button><button class="tab" data-target="team">🎶 童謠團練</button></div><div class="tg"><span class="tgl">練習</span><button class="tab" data-target="plan">練習日程</button><button class="tab" data-target="review">★ 重點複習</button><button class="tab" data-target="mark">劃記練習</button><button class="tab" data-target="note">筆記本</button></div><div class="tg"><span class="tgl">錄製</span><button class="tab" data-target="rec">錄製準備</button><button class="tab" data-target="mocka">模擬錄音</button><button class="tab" data-target="mockv">模擬錄影</button><button class="tab tab-rec" data-target="formal">● 正式錄影</button></div><div class="tg"><span class="tgl">報名</span><button class="tab" data-target="time">報名時程</button><button class="tab" data-target="rules">評分規範</button></div><div class="tg"><span class="tgl">說明</span><button class="tab" data-target="help">使用說明</button><button class="tab" data-target="pre">序言後記</button></div></div></div></nav>
 
 <main class="wrap">
 
@@ -798,6 +807,25 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       <p class="muted small" id="singTotal" style="text-align:center"></p>
       <div class="row" style="justify-content:center"><button class="btn ghost" data-target="note">寫下歡唱心得 →</button></div>
     </div>
+  </div>
+</section>
+
+<!-- ========== 童謠團練 ========== -->
+<section class="page" id="team" hidden>
+  <div class="sheet">
+    <h2>🎶 童謠團練</h2>
+    <p class="muted">選一冊，跟著團練影片一起唸、一起練。播放器右上角的清單圖示可以切換這一冊的每一首。</p>
+    <div class="segs team-tabs" id="teamTabs" role="tablist">
+      <button class="seg" data-team="v1" aria-pressed="true">童謠第一冊</button>
+      <button class="seg" data-team="v2" aria-pressed="false">童謠第二冊</button>
+      <button class="seg" data-team="v3" aria-pressed="false">童謠第三冊</button>
+    </div>
+    <div class="vbox"><iframe id="teamFrame" src="https://www.youtube-nocookie.com/embed/videoseries?list=PLcnYVfkeSHkYsLsgnMPqXkZ3QanpVujut" title="童謠團練播放清單" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    <div class="row"><a class="btn" id="teamOpen" href="https://www.youtube.com/playlist?list=PLcnYVfkeSHkYsLsgnMPqXkZ3QanpVujut" target="_blank" rel="noopener">▶ 在 YouTube 開啟播放清單</a><button class="btn ghost" id="teamGo" data-target="v1">看本冊曲目與歌詞 →</button></div>
+  </div>
+  <div class="sheet">
+    <div class="sec-head"><span class="pill">本冊曲目</span><span class="muted small">點曲名進入曲目頁，對照歌詞與示範音檔</span></div>
+    <div class="team-list" id="teamList"></div>
   </div>
 </section>
 
@@ -1395,6 +1423,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       <div class="fn"><b>曲目頁</b><p>注音積木圖、關鍵字與關鍵句、音檔（可調速）、跟讀錄音、短文、歌詞，可切換上一首／下一首。</p></div>
       <div class="fn"><b>🎙 句子語音練習</b><p>曲目頁下方逐句練習：切換美式／英式口音，選逐字、慢速 75%、一般 100%、快速 120% 四種語速聽示範；展開「自然語流解析」看可能的重音、弱讀、連音、同化、省音與語調；錄下自己唸，和示範對照回放。</p></div>
       <div class="fn"><b>♪ 歡唱童謠</b><p>兩個播放清單可切換：歌唱學童謠第一冊（14 首）、SoR 第五階段文意理解（9 支）；附歡唱三步驟與每日歡唱次數紀錄。</p></div>
+      <div class="fn"><b>🎶 童謠團練</b><p>第一～三冊團練影片播放清單，可切換冊別，下方列出本冊曲目，點曲名直接進入曲目頁對照歌詞。</p></div>
       <div class="fn"><b>筆記本</b><p>三種方格紙，可打字、手寫（紅藍綠筆、橡皮擦、復原），還有 18 張童謠小夥伴貼圖可拖曳、縮放；分成重點摘要、心得分享、塗鴉，自動儲存，可存成圖片。</p></div>
       <div class="fn"><b>★ 重點複習</b><p>星號曲目一輪一輪洗牌練習：先看中文曲名與積木圖自己唸，再翻開核對、聽示範，標記會了或再練。備份可匯出、匯入，跨裝置接著學。</p></div>
       <div class="fn"><b>練習日程</b><p>學新曲 → 分段串連 → 全冊計時 → 錄製上傳，每天打勾記錄進度。</p></div>
@@ -1621,7 +1650,7 @@ function songsOf(key){
 }
 
 /* ---------- 分頁導覽（data-target） ---------- */
-const PAGES=["home","pick","v1","v2","v3","song","sing","plan","review","pre","time","rules","mark","rec","mocka","mockv","formal","note","help"];
+const PAGES=["home","pick","v1","v2","v3","song","sing","team","plan","review","pre","time","rules","mark","rec","mocka","mockv","formal","note","help"];
 function go(id,scroll=true){
   if(!PAGES.includes(id)) id="home";
   PAGES.forEach(p=>{$("#"+p).hidden = p!==id});
@@ -2807,6 +2836,17 @@ document.addEventListener("click",e=>{
 });
 /* 某首的示範：有單首音檔用單首；有分段時間用全冊音檔該段 */
 function songDemo(vol,no){const k="v"+vol,ch=CHAPTERS[k];if(FULL_AUDIO[k]&&ch&&ch.length===SONGS[k].length){return playChapter(k,no-1,window._demoAudio||(window._demoAudio=new Audio(FULL_AUDIO[k])))}return false}
+
+/* ---------- 童謠團練 ---------- */
+const TEAM_PL={v1:"PLcnYVfkeSHkYsLsgnMPqXkZ3QanpVujut",v2:"PLcnYVfkeSHkaItRXAAS19bcW5PAiJj9NG",v3:"PLcnYVfkeSHkYB8kdd5kuO5udLn4SBgRC5"};
+function teamShow(k){if(!TEAM_PL[k])k="v1";store.set("team",k);
+  $$("#teamTabs [data-team]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.team===k));
+  const src="https://www.youtube-nocookie.com/embed/videoseries?list="+TEAM_PL[k];if($("#teamFrame").getAttribute("src")!==src)$("#teamFrame").src=src;
+  $("#teamOpen").href="https://www.youtube.com/playlist?list="+TEAM_PL[k];$("#teamGo").dataset.target=k;
+  $("#team").style.setProperty("--vc",`var(--v-${k})`);
+  $("#teamList").innerHTML=songsOf(k).map(s=>`<button class="team-it" data-song="${s.vol}-${s.no}"><b>${pad(s.no)}</b><span>${s.zh}</span><small class="en">${esc(s.en)}</small></button>`).join("")}
+$("#teamTabs").addEventListener("click",e=>{const b=e.target.closest("[data-team]");if(b)teamShow(b.dataset.team)});
+teamShow(store.get("team","v1"));
 
 /* ---------- 歡唱童謠 ---------- */
 function singPaint(){const log=store.get("sing",{}),d=ymd(new Date()),tot=Object.values(log).reduce((a,b)=>a+b,0),days=Object.keys(log).filter(k=>log[k]>0).length;
