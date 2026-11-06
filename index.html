@@ -863,7 +863,9 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
         <div class="segs" id="planLen">
           <button class="seg" data-len="28" aria-pressed="true">1 個月（4 週）</button>
           <button class="seg" data-len="56" aria-pressed="false">2 個月（8 週）</button>
+          <button class="seg" data-len="due" aria-pressed="false">🎯 指定認證月份（從今天排到截止日）</button>
         </div>
+        <label class="f plan-due" for="planMonth" hidden>想在哪個月認證？<select id="planMonth"></select></label>
       </div>
       <label class="f" for="planStart">開始日期<input type="date" id="planStart"></label>
     </div>
@@ -2233,8 +2235,18 @@ function stuLeave(id){
 /* 四階段：學新曲 → 分段串連 → 全冊計時 → 錄製上傳（天數依 1 個月 28 天／2 個月 56 天分配） */
 const PHASES=[
   {name:"學新曲",cls:"p0"},{name:"分段串連",cls:"p1"},{name:"全冊計時",cls:"p2"},{name:"錄製上傳",cls:"p3"}];
-let planLen=store.get("planLen",28);
-function phaseDays(D){const L=D/2,K=D/4,R=D===28?2:4;return [L,K,D-L-K-R,R]}
+let planLen=store.get("planLen",28),PLAN_D=28;
+/* 四階段天數：學新曲 50%、分段串連 25%、錄製上傳 2～4 天，其餘為全冊計時 */
+function phaseDays(D){if(D<4)return [Math.max(0,D-1),0,0,1];const R=D>=40?4:D>=8?2:1;let L=Math.max(1,Math.round(D*.5)),K=Math.max(1,Math.round(D*.25)),T=D-L-K-R;
+  while(T<1&&L>1){L--;T++}while(T<1&&K>1){K--;T++}return [L,K,T,R]}
+function planDays(){
+  if(planLen!=="due")return +planLen;
+  const s=new Date($("#planStart").value+"T00:00:00"),[y,m]=($("#planMonth").value||"").split("-").map(Number);
+  if(isNaN(s)||!y)return 28;const dl=new Date(y,m,0);return Math.max(1,Math.round((dl-s)/864e5)+1)}
+function fillPlanMonths(){const now=new Date(),keep=store.get("planMonth","");let h="";
+  for(let i=0;i<4;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1),last=new Date(d.getFullYear(),d.getMonth()+1,0);
+    h+=`<option value="${d.getFullYear()}-${d.getMonth()+1}">${d.getMonth()+1} 月認證（${last.getMonth()+1}/${last.getDate()} 截止）</option>`}
+  $("#planMonth").innerHTML=h;if([...$("#planMonth").options].some(o=>o.value===keep))$("#planMonth").value=keep}
 function ymd(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
 const WK="日一二三四五六";
@@ -2243,7 +2255,9 @@ function songTag(s,k){return `${k==="pick"?ZHNUM[s.vol-1]+"冊":"第"+ZHNUM[s.no
 function buildPlan(k,D){
   const v=VOLS[k], ss=songsOf(k), n=ss.length, [L,K,T,R]=phaseDays(D), days=[];
   // 1 學新曲
-  for(let i=0;i<L;i++){
+  if(L<n){for(let i=0;i<L;i++){const a=Math.floor(i*n/L),b=Math.floor((i+1)*n/L),grp=ss.slice(a,b);
+    days.push({p:0,tx:`新曲 ${grp.length} 首：${grp.map(s=>`〈${s.zh}〉`).join("")}——聽示範、逐句跟讀，對照紅藍注音唸準母音與子音${a>0?"；快速複習前一天的曲子":""}`})}}
+  else for(let i=0;i<L;i++){
     const si=Math.floor(i*n/L), first=i===0||Math.floor((i-1)*n/L)!==si, s=ss[si];
     let tx = first ? `新曲 ${songTag(s,k)}：聽示範、逐句跟讀，對照書上紅藍注音唸準母音與子音`
                    : `${songTag(s,k)}：自錄一次，用「劃記練習」自評語調、節奏與咬字`;
@@ -2251,10 +2265,10 @@ function buildPlan(k,D){
     days.push({p:0,tx});
   }
   // 2 分段串連
-  const size = D===28 ? Math.ceil(n/2) : Math.ceil(n/4);
+  const size = D<=35 ? Math.ceil(n/2) : Math.ceil(n/4);
   const chunks=[]; for(let i=0;i<n;i+=size) chunks.push(ss.slice(i,i+size));
   for(let i=0;i<K;i++){
-    if(i===K-1){days.push({p:1,tx:"全部曲目從頭順一遍（先不計時），標出卡住的地方"});continue}
+    if(i===K-1&&K>1||K===1){days.push({p:1,tx:"全部曲目從頭順一遍（先不計時），標出卡住的地方"});continue}
     const c=chunks[i%chunks.length];
     days.push({p:1,tx:`串連〈${c[0].zh}〉到〈${c[c.length-1].zh}〉共 ${c.length} 首，連續唸不停頓；換曲時加上口白`});
   }
@@ -2266,7 +2280,7 @@ function buildPlan(k,D){
     days.push({p:2,tx});
   }
   // 4 錄製上傳
-  const rec = R===2 ? ["正式錄製：一鏡到底，不剪輯不暫停；臉部嘴型清楚、安靜光線充足",
+  const rec = R===1 ? ["正式錄製一鏡到底，檔名改為「姓名_項目」，上傳個人 Google 雲端、設為共享，連結貼進官網報名表單"] : R===2 ? ["正式錄製：一鏡到底，不剪輯不暫停；臉部嘴型清楚、安靜光線充足",
                        "檔名改為「姓名_項目」，上傳個人 Google 雲端、設為共享，連結貼進官網報名表單"]
                     : ["模擬正式錄製：確認場地、光線、收音與鏡頭角度","回看模擬影片，修正最後的小問題，完成「拍攝檢核表」",
                        "正式錄製：一鏡到底，不剪輯不暫停","檔名改為「姓名_項目」，上傳個人 Google 雲端、設為共享，連結貼進官網報名表單"];
@@ -2276,9 +2290,10 @@ function buildPlan(k,D){
 
 let planKey="", planDone=[];
 function drawPlan(){
-  const k=$("#planVol").value||"pick", D=planLen, v=VOLS[k];
+  const k=$("#planVol").value||"pick", D=planDays(), v=VOLS[k];
   store.set("planVol",k); store.set("planStart",$("#planStart").value);
-  $$("#planLen .seg").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.len===D));
+  $$("#planLen .seg").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.len)===String(planLen)));
+  $(".plan-due").hidden=planLen!=="due";
   const start=new Date($("#planStart").value+"T00:00:00"); if(isNaN(start)) return;
   const days=buildPlan(k,D), end=addDays(start,D-1);
   const dl=new Date(end.getFullYear(),end.getMonth()+1,0), res=new Date(end.getFullYear(),end.getMonth()+1,15);
@@ -2288,15 +2303,16 @@ function drawPlan(){
     <div class="stat"><b>${dl.getMonth()+1}/${dl.getDate()} 23:59</b><span>當月上傳截止</span></div>
     <div class="stat"><b>${res.getMonth()+1}/15</b><span>前收到認證結果</span></div>
     <div class="stat"><b>${v.limitLbl.replace("限時 ","")}</b><span>${v.short}限時</span></div>
-    ${slack<2?`<p class="note plan-warn">日程最後一天離當月截止只剩 ${slack} 天，建議提早開始，或確認能在 ${dl.getMonth()+1}/${dl.getDate()} 前上傳。</p>`:""}`;
+    ${planLen==="due"&&D<14?`<p class="note plan-warn">⚠ 距離截止只剩 ${D} 天，時間很緊：每天至少練 30 分鐘，學新曲階段一天要學 ${Math.ceil(songsOf(k).length/Math.max(1,phaseDays(D)[0]))} 首。也可以改選下個月認證。</p>`:""}
+    ${planLen!=="due"&&slack<2?`<p class="note plan-warn">日程最後一天離當月截止只剩 ${slack} 天，建議提早開始，或確認能在 ${dl.getMonth()+1}/${dl.getDate()} 前上傳。</p>`:""}`;
   const pd=phaseDays(D);
   $("#phases").innerHTML=PHASES.map((p,i)=>`<span class="ph ${p.cls}"><i></i>${p.name} ${pd[i]} 天</span>`).join("");
-  planKey=`plan:${k}:${D}`; planDone=store.get(planKey,[]);
+  planKey=planLen==="due"?`plan:${k}:due:${$("#planStart").value}:${$("#planMonth").value}`:`plan:${k}:${D}`; planDone=store.get(planKey,[]);PLAN_D=D;
   const today=ymd(new Date()); let html="";
-  for(let w=0;w<D/7;w++){
-    const ws=addDays(start,w*7), we=addDays(start,w*7+6);
+  for(let w=0;w<Math.ceil(D/7);w++){
+    const ws=addDays(start,w*7), we=addDays(start,Math.min(D-1,w*7+6));
     html+=`<div class="week"><h3>第 ${w+1} 週<small>${ws.getMonth()+1}/${ws.getDate()}–${we.getMonth()+1}/${we.getDate()}</small></h3>`;
-    for(let i=w*7;i<w*7+7;i++){
+    for(let i=w*7;i<Math.min(D,w*7+7);i++){
       const d=addDays(start,i), dy=days[i], done=planDone.includes(i);
       html+=`<label class="day ${PHASES[dy.p].cls}${done?" done":""}${ymd(d)===today?" today":""}" for="pd${i}" id="day${i}">
         <input type="checkbox" id="pd${i}" data-pd="${i}" ${done?"checked":""}>
@@ -2308,15 +2324,17 @@ function drawPlan(){
   $("#weeks").innerHTML=html; planProg();
 }
 function planProg(){
-  $("#planCount").textContent=`已完成 ${planDone.length} / ${planLen} 天`;
-  $("#planBar").style.width=planDone.length/planLen*100+"%";
+  $("#planCount").textContent=`已完成 ${planDone.length} / ${PLAN_D} 天`;
+  $("#planBar").style.width=planDone.length/PLAN_D*100+"%";
 }
 $("#planVol").innerHTML=Object.entries(VOLS).map(([k,v])=>`<option value="${k}">${v.short}（${v.limitLbl}）</option>`).join("");
 $("#planVol").value=VOLS[store.get("planVol","pick")]?store.get("planVol","pick"):"pick";
 $("#planStart").value=store.get("planStart","")||ymd(new Date());
 $("#planVol").addEventListener("change",drawPlan);
+fillPlanMonths();
 $("#planStart").addEventListener("change",drawPlan);
-$("#planLen").addEventListener("click",e=>{const b=e.target.closest("[data-len]");if(!b)return;planLen=+b.dataset.len;store.set("planLen",planLen);drawPlan()});
+$("#planLen").addEventListener("click",e=>{const b=e.target.closest("[data-len]");if(!b)return;planLen=b.dataset.len==="due"?"due":+b.dataset.len;if(planLen==="due")$("#planStart").value=ymd(new Date());store.set("planLen",planLen);drawPlan()});
+$("#planMonth").addEventListener("change",()=>{store.set("planMonth",$("#planMonth").value);drawPlan()});
 $("#weeks").addEventListener("change",e=>{const c=e.target.closest("[data-pd]");if(!c)return;const i=+c.dataset.pd;
   planDone=c.checked?[...new Set([...planDone,i])]:planDone.filter(x=>x!==i);store.set(planKey,planDone);
   c.closest(".day").classList.toggle("done",c.checked);planProg()});
