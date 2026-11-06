@@ -572,6 +572,24 @@ footer{background:#1d3566}
 .team-it b{grid-row:span 2;color:var(--vc);font-family:var(--f-en);align-self:center}
 .team-it span{font-family:var(--f-display);font-weight:700}
 .team-it small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 曲目頁版面 */
+#song .song-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.quick-stats>div{background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;display:grid}
+.quick-stats b{font-family:var(--f-en);font-size:1.4rem;color:var(--vc,var(--ink));line-height:1.2}
+.quick-stats span{font-size:.75rem;color:var(--muted)}
+.quick-go{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.qg{border:1.5px solid var(--line);background:var(--paper);border-radius:12px;padding:8px 4px;cursor:pointer;display:grid;justify-items:center;gap:2px;font-size:1.3rem;color:var(--fg)}
+.qg span{font-size:.75rem;font-weight:600}
+.qg:hover{border-color:var(--vc,var(--ink));background:var(--tint)}
+.vlab,.essay-box,.lyr-box{scroll-margin-top:120px;border-top:5px solid var(--vc,var(--ink))}
+.essay-img{display:block;width:100%;max-width:780px;justify-self:center;border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden;background:#fff;cursor:zoom-in}
+.essay-img img{display:block;width:100%;height:auto}
+.zoom-box{position:fixed;inset:0;z-index:90;background:rgba(15,19,32,.9);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px;cursor:zoom-out}
+.zoom-box img{max-width:100%;max-height:88vh;border-radius:10px;background:#fff}
+.zoom-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;color:#fff;font-size:.9rem;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:999px}
+.lyr-box .lyrics{font-size:1.08rem;line-height:2;background:var(--tint);border-radius:12px;padding:12px 16px;border:1px solid var(--line)}
+@media (max-width:760px){#song .song-grid{grid-template-columns:1fr}}
 /* 卷軸朗讀錄音 */
 /* 句子語音練習 */
 .vl-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
@@ -588,13 +606,13 @@ footer{background:#1d3566}
 .vl-sp b{font-size:1.2rem}
 .vl-sp:hover{background:var(--gold-soft)}
 .vl-sp.playing{background:var(--ink);color:var(--paper)}
-@media (max-width:620px){.vl-modes{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:620px){.vl-modes{grid-template-columns:repeat(6,1fr)}.vl-modes .vl-sp{grid-column:span 2}.vl-modes .vl-sp:nth-child(n+4){grid-column:span 3}}
 .vl-sp.sel{background:var(--ink);color:var(--paper)}
 .vl-sp:disabled{opacity:.45;cursor:default}
 .vl-sp small{font-size:.7rem;font-weight:500}
 .vl-trk{border-left:4px solid var(--ink)}
 .vl-acts{display:flex;flex-wrap:wrap;gap:8px}
-@media (max-width:520px){.vl-acts{display:grid;grid-template-columns:1fr 1fr}.vl-acts .btn{justify-content:center;font-size:.88rem;padding-inline:8px;white-space:nowrap}.vl-sent{font-size:1.05rem}}
+@media (max-width:520px){.vl-acts{display:grid;grid-template-columns:repeat(3,1fr)}.vl-acts .btn{font-size:.8rem!important;padding-inline:4px!important}.vl-acts .btn{justify-content:center;font-size:.88rem;padding-inline:8px;white-space:nowrap}.vl-sent{font-size:1.05rem}}
 .vl-exp summary{cursor:pointer;font-weight:700;color:var(--ink)}
 .vl-sent{font-family:var(--f-en);font-size:1.2rem;line-height:2.4;margin-top:10px;padding:10px 12px;background:var(--paper);border-radius:10px;border:1px solid var(--line)}
 .vl-w{display:inline;padding:1px 2px;border-radius:4px;cursor:help}
@@ -1503,6 +1521,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
     </div>
   </div>
 </div>
+<div class="zoom-box" id="zoomBox" hidden role="dialog" aria-label="圖片放大"><img alt=""><span class="zoom-x">✕ 點任意處關閉</span></div>
 <footer>
   <div class="wrap">
     <h2>準備好了嗎？</h2>
@@ -1772,7 +1791,8 @@ function renderSong(){
   const {vol,no}=curSong, arr=SONGS["v"+vol], s=arr[no-1], id=`v${vol}-${pad(no)}`, d=DETAIL[id]||{}, im=IMGS["s-"+id];
   const prev=no>1?arr[no-2]:null, next=no<arr.length?arr[no]:null;
   const kc=d.kc==="r"?"var(--mark-red)":d.kc==="b"?"var(--mark-blue)":"var(--ink)";
-  const essay = d.essay ? d.essay.split("\n").filter(x=>x.trim()).map(p=>`<p>${esc(p)}</p>`).join("") : `<div class="placeholder soon">📖 短文準備中，敬請期待</div>`;
+  const essayImg=`img/essay-v${vol}-${pad(no)}.webp`;
+  const essay = `<button class="essay-img" data-zoom="${essayImg}" aria-label="放大短文圖"><img src="${essayImg}" alt="${s[0]} 語調一點通" loading="lazy"></button>`+(d.essay ? d.essay.split("\n").filter(x=>x.trim()).map(p=>`<p>${esc(p)}</p>`).join("") : "");
   const fullNote = !d.audio&&FULL_AUDIO["v"+vol] ? (CHAPTERS["v"+vol].length===arr.length?`<button class="btn" data-fch="v${vol}:${no-1}" data-fchsong="1">▶ 播放本首示範</button><audio controls preload="metadata" src="${FULL_AUDIO["v"+vol]}" data-full="v${vol}" hidden></audio>`:`<p class="muted small">本冊的真人示範是一整段全冊音檔，請到<button class="btn-s" data-target="v${vol}">${VOLS["v"+vol].short}曲目頁</button>上方「🎧 全冊示範音檔」播放。</p>`) : "";
   const trk=(src,lbl,cls)=>`<div class="trk ${cls}"><div class="trk-h"><b>${lbl}</b><span class="trk-r">${[0.75,1,1.25].map(r=>`<button class="seg" data-arate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</span></div><audio controls preload="metadata" src="${esc(src)}"></audio></div>`;
   const audio = (d.audio||d.zh) ? (d.audio?trk(d.audio,"🔤 英文示範（正常速度）","en"):"")+(d.zh?trk(d.zh,"🀄 "+(d.zhLabel||"中文翻譯"),"zh"):"")+(FULL_AUDIO["v"+vol]?`<p class="muted small">想一次聽完整冊？到<button class="btn-s" data-target="v${vol}">${VOLS["v"+vol].short}曲目頁</button>播放「🎧 全冊示範音檔」。</p>`:"")
@@ -1800,18 +1820,21 @@ function renderSong(){
         ${d.ks?`<button class="ks en" data-say="${esc(d.ks)}">${esc(d.ks)} <span>🔊</span></button>`:""}
         ${d.kc?`<p class="muted" style="font-size:.85rem">${d.kc==="r"?"紅字：留意母音":"藍字：留意子音"}</p>`:""}
       </div>
-      <div class="sheet shadow-rec">
-        <span class="pill">跟讀錄音</span>
-        <p class="muted" style="font-size:.9rem">聽完示範，錄下自己唸一遍，回放比對語調與咬字。錄音只留在這台裝置。</p>
-        <div class="row"><button class="btn rose" id="srBtn">● 錄音</button><span class="muted" id="srMsg"></span></div>
-        <audio id="srPlay" controls hidden style="width:100%"></audio>
-        <p class="muted" style="font-size:.85rem">本首已練習 <b id="srCount">${store.get("cnt-"+id,0)}</b> 次</p>
+      <div class="sheet quick-card">
+        <span class="pill">本首練習</span>
+        <div class="quick-stats"><div><b>${store.get("cnt-"+id,0)}</b><span>練習次數</span></div><div><b>${VMODES.filter(m=>vlSrc(d,m.k)).length}</b><span>真人示範</span></div><div><b>${(s[2]||"").split("\n").filter(Boolean).length||"—"}</b><span>句歌詞</span></div></div>
+        <div class="quick-go">
+          <button class="qg" data-jump-to="vlab">🎙<span>語音練習</span></button>
+          <button class="qg" data-jump-to="essayBox">📈<span>語調一點通</span></button>
+          <button class="qg" data-jump-to="lyrBox">📜<span>歌詞朗讀</span></button>
+          <button class="qg" data-markly="${vol}-${no}">✎<span>劃記練習</span></button>
+        </div>
       </div>
     </div>
   </div>
   <div class="sheet vlab" id="vlab"></div>
-  <div class="sheet prose-s"><span class="pill">短文</span>${essay}</div>
-  <div class="sheet"><span class="pill">歌詞</span>${lyr}</div>
+  <div class="sheet essay-box" id="essayBox"><div class="sec-head"><span class="pill">短文</span><span class="muted small">語調一點通：數字 1、4 標聲調，圓點 ● 為輕聲・點圖放大</span></div>${essay}</div>
+  <div class="sheet lyr-box" id="lyrBox"><span class="pill">歌詞</span>${lyr}</div>
   <div class="song-nav">
     ${prev?`<button class="btn ghost" data-song="${vol}-${no-1}">‹ ${prev[0]}</button>`:"<span></span>"}
     ${next?`<button class="btn" data-song="${vol}-${no+1}">${next[0]} ›</button>`:`<button class="btn" data-target="v${vol}">回到曲目清單</button>`}
@@ -2816,6 +2839,15 @@ document.addEventListener("click",async e=>{
   }
 });
 document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("vl-exp"))store.set("vlExp",e.target.open)},true);
+
+
+/* 曲目頁：快速跳轉與圖片放大 */
+document.addEventListener("click",e=>{
+  const j=e.target.closest("[data-jump-to]");if(j){const el=document.getElementById(j.dataset.jumpTo);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});return}
+  const z=e.target.closest("[data-zoom]");if(z){const lb=$("#zoomBox");lb.querySelector("img").src=z.dataset.zoom;lb.hidden=false;document.body.classList.add("no-scroll");return}
+  if(e.target.closest("#zoomBox")){$("#zoomBox").hidden=true;document.body.classList.remove("no-scroll")}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#zoomBox").hidden){$("#zoomBox").hidden=true;document.body.classList.remove("no-scroll")}});
 
 /* ---------- 全冊示範音檔 ---------- */
 function fullEl(k){return $(`audio[data-full="${k}"]`)}
