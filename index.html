@@ -1511,6 +1511,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
 
 </main>
 
+<audio id="rbAudio" preload="none" playsinline hidden></audio>
 <div class="read-bar" id="readBar" hidden role="region" aria-label="連續朗讀控制列">
   <div class="rb-inner">
     <div class="rb-info"><span class="rb-vol" id="rbVol"></span><span class="rb-now" id="rbNow"></span><div class="rb-track"><i id="rbProg"></i></div></div>
@@ -1733,6 +1734,7 @@ function buildVol(k){
       </div>
     </div>
   </div>
+  ${FULL_READ[k]?`<div class="sheet full-audio"><div class="sec-head"><span class="pill">🎤 大蒨老師全冊朗讀</span><span class="muted small">14 首歌詞連續朗讀，也可以直接按這裡播放</span></div><audio controls preload="none" playsinline src="${FULL_READ[k]}"></audio></div>`:""}
   ${FULL_AUDIO[k]?`<div class="sheet full-audio">
     <div class="sec-head"><span class="pill">🎧 全冊示範音檔</span><span class="muted small">真人示範 14 首全曲，跟著聽、跟著唸</span></div>
     <audio controls preload="metadata" src="${FULL_AUDIO[k]}" data-full="${k}"></audio>
@@ -2701,7 +2703,7 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-screc]"))setTim
 /* 曲目頁音軌：各自調速、互斥播放 */
 document.addEventListener("click",e=>{const b=e.target.closest("[data-arate]");if(!b)return;const box=b.closest(".trk"),a=box&&box.querySelector("audio");if(a)a.playbackRate=+b.dataset.arate;
   box.querySelectorAll("[data-arate]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
-document.addEventListener("play",e=>{const a=e.target;if(!(a instanceof HTMLMediaElement))return;
+document.addEventListener("play",e=>{const a=e.target;if(!(a instanceof HTMLMediaElement))return;if(a.id==="rbAudio"){document.querySelectorAll("audio").forEach(o=>{if(o!==a&&!o.paused)o.pause()});return}
   document.querySelectorAll("audio").forEach(o=>{if(o!==a&&!o.paused)o.pause()});
   if(typeof READER!=="undefined"&&READER.active)stopReading();try{speechSynthesis.cancel()}catch(err){}},true);
 
@@ -2912,12 +2914,14 @@ const READER={list:[],i:0,k:null,active:false,paused:false,audio:null,tok:0,wd:n
 function readAll(k){
   stopReading();
   if(FULL_READ[k]){
-    const a=new Audio(FULL_READ[k]);Object.assign(READER,{list:[],i:0,k,active:true,paused:false,full:true,audio:a});
+    const a=$("#rbAudio");a.pause();a.src=FULL_READ[k];a.currentTime=0;a.load();Object.assign(READER,{list:[],i:0,k,active:true,paused:false,full:true,audio:a});
     $("#readBar").hidden=false;document.body.classList.add("has-readbar");$("#rbPrev").hidden=$("#rbNext").hidden=true;
     $("#rbVol").textContent=`大蒨老師全冊朗讀・${VOLS[k].short}`;
     a.ontimeupdate=()=>{if(!a.duration)return;$("#rbNow").innerHTML=`<b class="en">${fmt(a.currentTime)} / ${fmt(a.duration)}</b>　14 首連續朗讀`;$("#rbProg").style.width=(a.currentTime/a.duration*100)+"%"};
-    a.onended=stopReading;a.onerror=()=>{$("#rbNow").textContent="音檔載入失敗，請稍後再試"};
-    $("#rbNow").textContent="載入中…";setPauseBtn();a.play().catch(()=>{READER.paused=true;setPauseBtn()});return;
+    a.onended=stopReading;a.onerror=()=>{$("#rbNow").textContent="音檔載入失敗，請檢查網路後再按一次"};
+    a.onwaiting=()=>{if(READER.full)$("#rbNow").textContent="載入中…"};
+    $("#rbNow").textContent="載入中…";setPauseBtn();
+    const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{READER.paused=true;setPauseBtn();$("#rbNow").textContent="請按「▶ 繼續」開始播放"});return;
   }
   Object.assign(READER,{list:songsOf(k),i:0,k,active:true,paused:false});
   $("#readBar").hidden=false; document.body.classList.add("has-readbar");
