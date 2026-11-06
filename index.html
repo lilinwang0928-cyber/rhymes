@@ -673,6 +673,7 @@ footer{background:#1d3566}
 .sc-btns .btn-s:disabled{opacity:.35;cursor:default}
 .sc-btns .btn-s.ready{background:var(--mark-green);border-color:var(--mark-green);color:#fff}
 .sc-r{border-color:var(--rose)!important;color:var(--rose)!important}
+.btn-s.on-play,.btn.on-play{background:var(--gold)!important;border-color:var(--gold)!important;color:#2c2a33!important}
 .sc-r.on{background:var(--rose)!important;color:#fff!important}
 @media (max-width:420px){.sc-row{grid-template-columns:26px 1fr}.sc-btns{grid-column:2}}
 @media (max-width:520px){
@@ -1610,6 +1611,8 @@ const MARK_SAMPLES = [
 const SC_HOT={v1:{p:[29.35,82.3],m:[36.88,82],d:5.6},v2:{p:[27.4,81.1],m:[35.2,81.1],d:5.8},v3:{p:[27.2,82.9],m:[34.8,82.9],d:5.8}};
 const SCROLL_AUDIO={v1:"",v2:"",v3:""};
 /* 全冊示範音檔（英文全曲）；CHAPTERS 填每首開始的秒數（14 個），填好後可逐首跳播、曲目頁「示範」也會播該段 */
+/* 全冊連續朗讀改播的真人全冊音檔 */
+const FULL_READ={v1:"audio/v1-read-full.mp3",v2:"",v3:""};
 const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"",v3:""};
 const CHAPTERS={v1:[],v2:[],v3:[]};
 const DETAIL = {
@@ -1629,7 +1632,7 @@ const DETAIL = {
   "v1-14":{kw:"apple",kc:"b",ks:"An apple a day.",essay:"",audio:"audio/v1-14-en.mp3",zh:"audio/v1-14-zh.mp3",read:"audio/v1-14-read.mp3",word:"audio/v1-14-word.mp3",slow:"audio/v1-14-slow.mp3",chant:"audio/v1-14-chant.mp3"},
   "v2-01":{kw:"we",kc:"r",ks:"Me myself and I.",essay:"",audio:"audio/v2-01-en.mp3",zh:"audio/v2-01-zh.mp3",read:"audio/v2-01-read.mp3",word:"audio/v2-01-word.mp3",slow:"audio/v2-01-slow.mp3",chant:"audio/v2-01-chant.mp3"},
   "v2-02":{kw:"teapot",kc:"b",ks:"Tip me up and pour me out.",essay:"",audio:"audio/v2-02-en.mp3",zh:"audio/v2-02-zh.mp3",read:"audio/v2-02-read.mp3",word:"audio/v2-02-word.mp3",slow:"audio/v2-02-slow.mp3",chant:"audio/v2-02-chant.mp3"},
-  "v2-03":{kw:"days",kc:"",ks:"How many days has my baby to play?",essay:"",audio:"audio/v2-03-en.mp3",read:"audio/v2-03-read.mp3",word:"audio/v2-03-word.mp3",slow:"audio/v2-03-slow.mp3",chant:"audio/v2-03-chant.mp3"},
+  "v2-03":{kw:"days",kc:"",ks:"How many days has my baby to play?",essay:"",audio:"audio/v2-03-en.mp3",zh:"audio/v2-03-zh.mp3",read:"audio/v2-03-read.mp3",word:"audio/v2-03-word.mp3",slow:"audio/v2-03-slow.mp3",chant:"audio/v2-03-chant.mp3"},
   "v2-04":{kw:"hen",kc:"b",ks:"One two buckle my shoe.",essay:"",audio:"audio/v2-04-en.mp3",zh:"audio/v2-04-zh.mp3",read:"audio/v2-04-read.mp3",word:"audio/v2-04-word.mp3",slow:"audio/v2-04-slow.mp3",chant:"audio/v2-04-chant.mp3"},
   "v2-05":{kw:"woman",kc:"r",ks:"If she's not gone, she lives there still.",essay:"",audio:"audio/v2-05-en.mp3",zh:"audio/v2-05-zh.mp3",read:"audio/v2-05-read.mp3",word:"audio/v2-05-word.mp3",slow:"audio/v2-05-slow.mp3",chant:"audio/v2-05-chant.mp3"},
   "v2-06":{kw:"they",kc:"b",ks:"They all took one, and left four in.",essay:"",audio:"audio/v2-06-en.mp3",zh:"audio/v2-06-zh.mp3",read:"audio/v2-06-read.mp3",word:"audio/v2-06-word.mp3",slow:"audio/v2-06-slow.mp3",chant:"audio/v2-06-chant.mp3"},
@@ -1738,7 +1741,7 @@ function buildVol(k){
     ${CHAPTERS[k]&&CHAPTERS[k].length===songsOf(k).length?`<div class="fa-ch">${songsOf(k).map((s,i)=>`<button class="btn-s" data-fch="${k}:${i}">${pad(i+1)} ${s.zh}</button>`).join("")}</div>`:""}
   </div>`:""}
   <div class="sheet">
-    <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">▶ 全冊連續朗讀</button></div>
+    <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">${FULL_READ[k]?"▶ 大蒨老師全冊朗讀":"▶ 全冊連續朗讀"}</button></div>
     <div class="songs">${list}</div>
   </div>
   ${v.scroll?`<div class="sheet scroll-box" data-scroll="${k}">
@@ -2880,6 +2883,17 @@ function teamShow(k){if(!TEAM_PL[k])k="v1";store.set("team",k);
 $("#teamTabs").addEventListener("click",e=>{const b=e.target.closest("[data-team]");if(b)teamShow(b.dataset.team)});
 teamShow(store.get("team","v1"));
 
+
+/* 卷軸：單首播放可再按一次停止，並顯示播放中狀態 */
+function scHalt(){try{scStopSeq()}catch(e){}try{zhStop()}catch(e){}if(SC.audio){SC.audio.pause();SC.audio=null}try{speechSynthesis.cancel()}catch(e){}$$(".sc-row.playing").forEach(r=>r.classList.remove("playing"));scUnmark()}
+function scUnmark(){$$(".on-play").forEach(b=>{b.classList.remove("on-play");if(b.dataset.orig!=null){b.innerHTML=b.dataset.orig;delete b.dataset.orig}})}
+function scMark(b){scUnmark();if(!b)return;b.classList.add("on-play");if(!b.classList.contains("sc-hot")){b.dataset.orig=b.innerHTML;b.innerHTML=b.matches("[data-sczhall]")?"■ 停止中文朗讀":"⏸ 停"}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-scone],[data-sczh1]");if(b&&b.classList.contains("on-play")){e.stopImmediatePropagation();e.preventDefault();scHalt()}},true);
+document.addEventListener("click",e=>{const b=e.target.closest("[data-scone],[data-sczh1],[data-sczhall]");if(!b)return;
+  if(b.matches("[data-sczhall]")){setTimeout(()=>{if(ZH.seq){$$(`[data-sczhall="${b.dataset.sczhall}"]`).forEach(x=>{if(!x.classList.contains("sc-hot")){x.classList.add("on-play");if(x.dataset.orig==null){x.dataset.orig=x.innerHTML;x.innerHTML="■ 停止中文朗讀"}}})}else scUnmark()},30);return}
+  setTimeout(()=>{if((SC.audio&&!SC.audio.paused)||("speechSynthesis" in window&&speechSynthesis.speaking)||SC.audio)scMark(b)},120)});
+setInterval(()=>{if(!$$(".on-play").length)return;const busy=(SC.audio&&!SC.audio.paused&&!SC.audio.ended)||ZH.seq||SC.seq||("speechSynthesis" in window&&speechSynthesis.speaking);if(!busy)scUnmark()},500);
+
 /* ---------- 歡唱童謠 ---------- */
 function singPaint(){const log=store.get("sing",{}),d=ymd(new Date()),tot=Object.values(log).reduce((a,b)=>a+b,0),days=Object.keys(log).filter(k=>log[k]>0).length;
   $("#singToday").textContent=log[d]||0;$("#singTotal").textContent=tot?`累計 ${tot} 遍・唱了 ${days} 天`:"唱完一遍就按 ＋1，記錄每天的歡唱。"}
@@ -2897,6 +2911,14 @@ $("#singPlus").addEventListener("click",()=>singAdd(1));$("#singMinus").addEvent
 const READER={list:[],i:0,k:null,active:false,paused:false,audio:null,tok:0,wd:null};
 function readAll(k){
   stopReading();
+  if(FULL_READ[k]){
+    const a=new Audio(FULL_READ[k]);Object.assign(READER,{list:[],i:0,k,active:true,paused:false,full:true,audio:a});
+    $("#readBar").hidden=false;document.body.classList.add("has-readbar");$("#rbPrev").hidden=$("#rbNext").hidden=true;
+    $("#rbVol").textContent=`大蒨老師全冊朗讀・${VOLS[k].short}`;
+    a.ontimeupdate=()=>{if(!a.duration)return;$("#rbNow").innerHTML=`<b class="en">${fmt(a.currentTime)} / ${fmt(a.duration)}</b>　14 首連續朗讀`;$("#rbProg").style.width=(a.currentTime/a.duration*100)+"%"};
+    a.onended=stopReading;a.onerror=()=>{$("#rbNow").textContent="音檔載入失敗，請稍後再試"};
+    $("#rbNow").textContent="載入中…";setPauseBtn();a.play().catch(()=>{READER.paused=true;setPauseBtn()});return;
+  }
   Object.assign(READER,{list:songsOf(k),i:0,k,active:true,paused:false});
   $("#readBar").hidden=false; document.body.classList.add("has-readbar");
   READER.wd=setInterval(()=>{if(READER.active&&!READER.paused&&!READER.audio&&speechSynthesis.speaking){speechSynthesis.pause();speechSynthesis.resume()}},10000);
@@ -2940,7 +2962,7 @@ function skipReading(d){
 }
 function stopReading(){
   if(!READER.active&&$("#readBar").hidden)return;
-  READER.active=false;READER.paused=false;READER.tok++;clearInterval(READER.wd);
+  READER.active=false;READER.paused=false;READER.full=false;READER.tok++;clearInterval(READER.wd);$("#rbPrev").hidden=$("#rbNext").hidden=false;
   if(READER.audio){READER.audio.pause();READER.audio=null}
   try{speechSynthesis.cancel()}catch(e){}
   $("#readBar").hidden=true;document.body.classList.remove("has-readbar");
