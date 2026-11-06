@@ -1613,7 +1613,11 @@ const SC_HOT={v1:{p:[29.35,82.3],m:[36.88,82],d:5.6},v2:{p:[27.4,81.1],m:[35.2,8
 const SCROLL_AUDIO={v1:"",v2:"",v3:""};
 /* 全冊示範音檔（英文全曲）；CHAPTERS 填每首開始的秒數（14 個），填好後可逐首跳播、曲目頁「示範」也會播該段 */
 /* 全冊連續朗讀改播的真人全冊音檔 */
-const FULL_READ={v1:"audio/v1-read-full.mp3",v2:"",v3:""};
+const FULL_READ={v1:"audio/v1-read-full.mp3",v2:"audio/v2-read-full.mp3",v3:"audio/v3-read-full.mp3"};
+/* 全冊朗讀音檔中每首開始的秒數（由 14 首朗讀歌詞音檔串接而成） */
+const READ_CH={v1:[0,12.11,34.17,46.33,63.66,102.59,125.15,146.2,153.67,165.43,182.18,203.42,218.46,233.2],
+  v2:[0,16.5,35.67,51.26,67.62,79.86,99.38,116.64,129.4,138.34,159.96,169.41,196.55,208.91],
+  v3:[0,34.76,51.83,63.66,77.86,91.18,105.37,128.51,141.78,152.64,165.43,183.87,204.07,211.97]};
 const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"",v3:""};
 const CHAPTERS={v1:[],v2:[],v3:[]};
 const DETAIL = {
@@ -1734,7 +1738,7 @@ function buildVol(k){
       </div>
     </div>
   </div>
-  ${FULL_READ[k]?`<div class="sheet full-audio"><div class="sec-head"><span class="pill">🎤 大蒨老師全冊朗讀</span><span class="muted small">14 首歌詞連續朗讀，也可以直接按這裡播放</span></div><audio controls preload="none" playsinline src="${FULL_READ[k]}"></audio></div>`:""}
+  ${FULL_READ[k]?`<div class="sheet full-audio"><div class="sec-head"><span class="pill">🎤 大蒨老師全冊朗讀</span><span class="muted small">14 首朗讀歌詞串接・音量已調整一致，也可以直接按這裡播放</span></div><audio controls preload="none" playsinline src="${FULL_READ[k]}"></audio></div>`:""}
   ${FULL_AUDIO[k]?`<div class="sheet full-audio">
     <div class="sec-head"><span class="pill">🎧 全冊示範音檔</span><span class="muted small">真人示範 14 首全曲，跟著聽、跟著唸</span></div>
     <audio controls preload="metadata" src="${FULL_AUDIO[k]}" data-full="${k}"></audio>
@@ -2914,10 +2918,12 @@ const READER={list:[],i:0,k:null,active:false,paused:false,audio:null,tok:0,wd:n
 function readAll(k){
   stopReading();
   if(FULL_READ[k]){
-    const a=$("#rbAudio");a.pause();a.src=FULL_READ[k];a.currentTime=0;a.load();Object.assign(READER,{list:[],i:0,k,active:true,paused:false,full:true,audio:a});
-    $("#readBar").hidden=false;document.body.classList.add("has-readbar");$("#rbPrev").hidden=$("#rbNext").hidden=true;
+    const a=$("#rbAudio");a.pause();a.src=FULL_READ[k];a.currentTime=0;a.load();Object.assign(READER,{list:songsOf(k),i:0,hl:-1,k,active:true,paused:false,full:true,audio:a});
+    $("#readBar").hidden=false;document.body.classList.add("has-readbar");$("#rbPrev").hidden=$("#rbNext").hidden=false;
     $("#rbVol").textContent=`大蒨老師全冊朗讀・${VOLS[k].short}`;
-    a.ontimeupdate=()=>{if(!a.duration)return;$("#rbNow").innerHTML=`<b class="en">${fmt(a.currentTime)} / ${fmt(a.duration)}</b>　14 首連續朗讀`;$("#rbProg").style.width=(a.currentTime/a.duration*100)+"%"};
+    a.ontimeupdate=()=>{if(!a.duration)return;const ch=READ_CH[k];let i=ch.length-1;while(i>0&&a.currentTime<ch[i])i--;
+      READER.i=i;if(i!==READER.hl){READER.hl=i;$$(".song-row.reading").forEach(r=>r.classList.remove("reading"));const s=READER.list[i],row=s&&$(`#${k} .song-row[data-song="${s.vol}-${s.no}"]`);if(row){row.classList.add("reading");if(!$("#"+k).hidden)row.scrollIntoView({behavior:"smooth",block:"nearest"})}}
+      const s=READER.list[i];$("#rbNow").innerHTML=`<b class="en">${pad(i+1)} / 14</b>　${s?s.zh:""}　<span class="en">${fmt(a.currentTime)} / ${fmt(a.duration)}</span>`;$("#rbProg").style.width=(a.currentTime/a.duration*100)+"%"};
     a.onended=stopReading;a.onerror=()=>{$("#rbNow").textContent="音檔載入失敗，請檢查網路後再按一次"};
     a.onwaiting=()=>{if(READER.full)$("#rbNow").textContent="載入中…"};
     $("#rbNow").textContent="載入中…";setPauseBtn();
@@ -2961,6 +2967,7 @@ function pauseReading(){
 }
 function skipReading(d){
   if(!READER.active)return;
+  if(READER.full){const ch=READ_CH[READER.k],a=READER.audio;let i=Math.max(0,Math.min(ch.length-1,READER.i+d));a.currentTime=ch[i]+.01;READER.i=i;if(READER.paused){READER.paused=false;a.play().catch(()=>{});setPauseBtn()}return}
   READER.tok++; if(READER.audio){READER.audio.pause();READER.audio=null} try{speechSynthesis.cancel()}catch(e){}
   READER.paused=false; READER.i=Math.max(0,Math.min(READER.list.length-1,READER.i+d)); readCur();
 }
