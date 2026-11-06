@@ -1743,7 +1743,6 @@ function buildVol(k){
     <audio controls preload="metadata" src="${FULL_AUDIO[k]}" data-full="${k}"></audio>
     <div class="row"><span class="muted small">播放速度</span>${[0.75,0.9,1,1.25].map(r=>`<button class="seg" data-frate="${k}:${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}
       <span class="muted small fa-time" data-ftime="${k}"></span></div>
-    ${CHAPTERS[k]&&CHAPTERS[k].length===songsOf(k).length?`<div class="fa-ch">${songsOf(k).map((s,i)=>`<button class="btn-s" data-fch="${k}:${i}">${String(i+1).padStart(2,"0")} ${s.zh}</button>`).join("")}</div>`:""}
   </div>`:""}
   <div class="sheet">
     <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">${FULL_READ[k]?"▶ 大蒨老師全冊朗讀":"▶ 全冊連續朗讀"}</button></div>
