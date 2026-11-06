@@ -1618,8 +1618,8 @@ const FULL_READ={v1:"audio/v1-read-full.mp3",v2:"audio/v2-read-full.mp3",v3:"aud
 const READ_CH={v1:[0,12.11,34.17,46.33,63.66,102.59,125.15,146.2,153.67,165.43,182.18,203.42,218.46,233.2],
   v2:[0,16.5,35.67,51.26,67.62,79.86,99.38,116.64,129.4,138.34,159.96,169.41,196.55,208.91],
   v3:[0,34.76,51.83,63.66,77.86,91.18,105.37,128.51,141.78,152.64,165.43,183.87,204.07,211.97]};
-const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"",v3:""};
-const CHAPTERS={v1:[],v2:[],v3:[]};
+const FULL_AUDIO={v1:"audio/v1-full.mp3",v2:"audio/v2-full.mp3",v3:"audio/v3-full.mp3"};
+const CHAPTERS={v1:[],v2:[0,23.78,45.28,63.04,88.27,99.99,123.65,151.81,169.4,179.72,208.22,219.71,257.73,269.09],v3:[0,43.73,70.58,86.46,107.71,124.04,145.49,166.94,183.18,196.1,211.73,234.45,259.05,269.23]};
 const DETAIL = {
   "v1-01":{kw:"rain",kc:"r",ks:"Rain, rain, go away.",essay:"",audio:"audio/v1-01-en.mp3",zh:"audio/v1-01-zh.mp3",read:"audio/v1-01-read.mp3",word:"audio/v1-01-word.mp3",slow:"audio/v1-01-slow.mp3",chant:"audio/v1-01-chant.mp3"},
   "v1-02":{kw:"star",kc:"",ks:"Twinkle, twinkle, little star.",essay:"",audio:"audio/v1-02-en.mp3",zh:"audio/v1-02-zh.mp3",read:"audio/v1-02-read.mp3",word:"audio/v1-02-word.mp3",slow:"audio/v1-02-slow.mp3",chant:"audio/v1-02-chant.mp3"},
@@ -1743,7 +1743,7 @@ function buildVol(k){
     <audio controls preload="metadata" src="${FULL_AUDIO[k]}" data-full="${k}"></audio>
     <div class="row"><span class="muted small">播放速度</span>${[0.75,0.9,1,1.25].map(r=>`<button class="seg" data-frate="${k}:${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}
       <span class="muted small fa-time" data-ftime="${k}"></span></div>
-    ${CHAPTERS[k]&&CHAPTERS[k].length===songsOf(k).length?`<div class="fa-ch">${songsOf(k).map((s,i)=>`<button class="btn-s" data-fch="${k}:${i}">${pad(i+1)} ${s.zh}</button>`).join("")}</div>`:""}
+    ${CHAPTERS[k]&&CHAPTERS[k].length===songsOf(k).length?`<div class="fa-ch">${songsOf(k).map((s,i)=>`<button class="btn-s" data-fch="${k}:${i}">${String(i+1).padStart(2,"0")} ${s.zh}</button>`).join("")}</div>`:""}
   </div>`:""}
   <div class="sheet">
     <div class="sec-head"><span class="pill">曲目清單</span><span class="muted" style="font-size:.9rem">點曲名進入曲目頁；🔊 唸英文曲名</span><button class="btn read-all" data-readall="${k}">${FULL_READ[k]?"▶ 大蒨老師全冊朗讀":"▶ 全冊連續朗讀"}</button></div>
