@@ -692,8 +692,8 @@ footer{background:#1d3566}
 .k-nuc{color:var(--mark-red)}.k-wk{color:var(--muted)}.k-link,.k-lr{color:var(--mark-blue)}.k-asm,.k-fl{color:var(--mark-green)}.k-eli{color:var(--rose)}
 .vl-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
 .vl-legend span{display:inline-flex;align-items:center;gap:4px}
-.lg{display:inline-block;width:16px;height:10px;border-radius:2px}
-.lg.st{border-bottom:3px solid var(--gold)}.lg.nuc{background:var(--gold-soft);border-bottom:3px solid var(--mark-red)}.lg.wk{border-bottom:2px dotted var(--muted)}.lg.fl{background:rgba(79,154,104,.35)}
+.vlg{display:inline-block;width:16px;height:10px;border-radius:2px}
+.vlg.st{border-bottom:3px solid var(--gold)}.vlg.nuc{background:var(--gold-soft);border-bottom:3px solid var(--mark-red)}.vlg.wk{border-bottom:2px dotted var(--muted)}.vlg.fl{background:rgba(79,154,104,.35)}
 .vl-warn{font-size:.8rem;color:var(--muted);margin-top:6px}
 .vl-src{line-height:1.6}
 .trk{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--tint)}
@@ -3035,7 +3035,7 @@ function vlExplore(){
   notes.push(`<li><b>語調 ${into.a}</b>：${into.t}。</li>`);
   return `<div class="vl-sent">${html} <span class="vl-into">${into.a}</span></div>
     <ul class="vl-notes">${notes.join("")}</ul>
-    <div class="vl-legend"><span><i class="lg st"></i>可能重讀</span><span><i class="lg nuc"></i>主要重音</span><span><i class="lg wk"></i>可能弱讀</span><span><b>‿</b> 連音</span>${VL.acc==="uk"?"<span><b>r‿</b> linking R</span>":"<span><i class=\"lg fl\"></i>flap T</span>"}<span><b>⇢</b> 同化</span><span><b>⌁</b> 省音</span><span><b>↗↘→</b> 語調</span></div>
+    <div class="vl-legend"><span><i class="vlg st"></i>可能重讀</span><span><i class="vlg nuc"></i>主要重音</span><span><i class="vlg wk"></i>可能弱讀</span><span><b>‿</b> 連音</span>${VL.acc==="uk"?"<span><b>r‿</b> linking R</span>":"<span><i class=\"vlg fl\"></i>flap T</span>"}<span><b>⇢</b> 同化</span><span><b>⌁</b> 省音</span><span><b>↗↘→</b> 語調</span></div>
     <p class="vl-warn">⚠ 以上是依拼字與語法規則推測「可能發生」的語音現象，未與音檔逐一比對；實際是否連音、弱化，請以耳朵聽到的真人示範為準。</p>`;
 }
 const VMODES=[{k:"word",n:"①",t:"逐字朗讀",f:"word"},{k:"slow",n:"②",t:"慢速分解",f:"slow"},{k:"nat",n:"③",t:"一般語速",f:"audio"},{k:"chant",n:"④",t:"朗誦讀經",f:"chant"},{k:"zh",n:"⑤",t:"中文翻譯",f:"zh"}];
