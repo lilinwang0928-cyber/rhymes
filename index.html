@@ -590,6 +590,17 @@ footer{background:#1d3566}
 .zoom-x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;color:#fff;font-size:.9rem;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:999px}
 .lyr-box .lyrics{font-size:1.08rem;line-height:2;background:var(--tint);border-radius:12px;padding:12px 16px;border:1px solid var(--line)}
 @media (max-width:760px){#song .song-grid{grid-template-columns:1fr}}
+/* 目標秒數 */
+.tgt-b{font-style:normal;font-family:var(--f-en);font-size:.72rem;font-weight:600;color:var(--vc,var(--ink));background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:8px;vertical-align:middle;white-space:nowrap;letter-spacing:0}
+.tgt-card{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:8px;margin-top:6px}
+.tgt-main{display:flex;gap:10px;align-items:center;background:var(--tint);border:1px solid var(--line);border-left:4px solid var(--vc,var(--ink));border-radius:10px;padding:8px 12px}
+.tgt-ico{font-size:1.4rem}
+.tgt-main b{display:block;font-size:1.15rem;color:var(--vc,var(--ink));font-variant-numeric:tabular-nums}
+.tgt-main span{font-size:.78rem;color:var(--muted);line-height:1.4}
+.tgt-how{grid-column:1/-1;font-size:.88rem}
+.tgt-how summary{cursor:pointer;color:var(--ink);font-weight:600}
+.tgt-how p{margin-top:6px;color:var(--muted);line-height:1.7}
+.quick-stats b small{font-size:.75rem}
 /* 卷軸朗讀錄音 */
 /* 句子語音練習 */
 .vl-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
@@ -1727,7 +1738,7 @@ function buildVol(k){
   const list = songsOf(k).map(s=>{
     const no = k==="pick" ? `${ZHNUM[s.vol-1]}冊 ${String(s.no).padStart(2,"0")}` : String(s.no).padStart(2,"0");
     const im = IMGS[`s-v${s.vol}-${String(s.no).padStart(2,"0")}`];
-    return `<div class="song-row" data-song="${s.vol}-${s.no}"><span class="no">${no}</span>${im?`<img class="thumb" src="${im}" alt="">`:`<span class="thumb ph-thumb">♪</span>`}<a class="st" href="#v${s.vol}-${String(s.no).padStart(2,"0")}" data-song="${s.vol}-${s.no}"><span class="zh">${s.zh}</span><span class="entitle">${esc(s.en)}</span></a><button class="star-btn" data-star="${s.vol}-${s.no}" aria-label="加星號">☆</button><button class="speak" data-say="${esc(s.en)}" aria-label="朗讀 ${esc(s.en)}">🔊</button><span class="go" aria-hidden="true">›</span></div>`}).join("");
+    return `<div class="song-row" data-song="${s.vol}-${s.no}"><span class="no">${no}</span>${im?`<img class="thumb" src="${im}" alt="">`:`<span class="thumb ph-thumb">♪</span>`}<a class="st" href="#v${s.vol}-${String(s.no).padStart(2,"0")}" data-song="${s.vol}-${s.no}"><span class="zh">${s.zh}<em class="tgt-b">⏱ ${(k==="pick"?tgtPick(s.vol,s.no):tgtFor(s.vol,s.no)).sec} 秒</em></span><span class="entitle">${esc(s.en)}</span></a><button class="star-btn" data-star="${s.vol}-${s.no}" aria-label="加星號">☆</button><button class="speak" data-say="${esc(s.en)}" aria-label="朗讀 ${esc(s.en)}">🔊</button><span class="go" aria-hidden="true">›</span></div>`}).join("");
   $("#"+k).innerHTML = `
   <div class="sheet">
     <div class="vol-head vc-top">
@@ -1788,6 +1799,23 @@ document.addEventListener("click",e=>{
 },true);
 
 
+
+/* ---------- 每首目標秒數：由認證限時回推 ----------
+   限時 ＝ 開場口白 + 每首曲名口白 + 安全緩衝（10%）＋ 唸童謠時間；唸童謠時間依每首音節數分配 */
+function syl(w){w=w.toLowerCase().replace(/[^a-z]/g,"");if(!w)return 0;if(w.length<=3)return 1;w=w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/,"").replace(/^y/,"");const m=w.match(/[aeiouy]{1,2}/g);return Math.max(1,m?m.length:1)}
+function songSyl(s){return (s[2]||s[1]).split(/\s+/).reduce((a,w)=>a+syl(w),0)}
+function songTargets(k){
+  const TGT_INTRO=5,TGT_TITLE=2,TGT_BUF=.10;
+  const v=VOLS[k],list=k==="pick"?VOLS.pick.songs.map(([id])=>{const [a,b]=id.split("-");return SONGS["v"+a][+b-1]}):SONGS[k];
+  const n=list.length,buf=Math.round(v.limit*TGT_BUF),rhyme=v.limit-TGT_INTRO-n*TGT_TITLE-buf;
+  const sy=list.map(songSyl),tot=sy.reduce((a,b)=>a+b,0);
+  let cum=TGT_INTRO;const out=sy.map((x,i)=>{const sec=Math.max(3,Math.round(rhyme*x/tot));cum+=TGT_TITLE+sec;return {sec,syl:x,cum}});
+  return {list:out,intro:TGT_INTRO,title:TGT_TITLE,buf,rhyme,limit:v.limit,n};
+}
+function tgtFor(vol,no){return songTargets("v"+vol).list[no-1]}
+function tgtPick(vol,no){const i=VOLS.pick.songs.findIndex(([id])=>{const [a,b]=id.split("-");return +a===+vol&&+b===+no});return i<0?null:Object.assign({i},songTargets("pick").list[i])}
+function fmtS(s){return `${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`}
+
 /* ---------- 曲目頁 ---------- */
 let curSong=store.get("song",{vol:1,no:1});
 const pad=n=>String(n).padStart(2,"0");
@@ -1798,6 +1826,7 @@ function openSong(vol,no,scroll=true){
 }
 function renderSong(){
   const {vol,no}=curSong, arr=SONGS["v"+vol], s=arr[no-1], id=`v${vol}-${pad(no)}`, d=DETAIL[id]||{}, im=IMGS["s-"+id];
+  const tg=tgtFor(vol,no),tt=songTargets("v"+vol),tp=tgtPick(vol,no);
   const prev=no>1?arr[no-2]:null, next=no<arr.length?arr[no]:null;
   const kc=d.kc==="r"?"var(--mark-red)":d.kc==="b"?"var(--mark-blue)":"var(--ink)";
   const essayImg=`img/essay-v${vol}-${pad(no)}.webp`;
@@ -1818,6 +1847,12 @@ function renderSong(){
       <span class="no-big">第${ZHNUM[no-1]}首　<button class="star-btn" data-star="${vol}-${no}">☆</button><span class="muted small">加入重點複習</span></span>
       <h2>${s[0]}</h2>
       <p class="en-big en">${esc(s[1])} <button class="speak" data-say="${esc(s[1])}" aria-label="朗讀曲名">🔊</button></p>
+      <div class="tgt-card">
+        <div class="tgt-main"><span class="tgt-ico">⏱</span><div><b>目標 ${tg.sec} 秒</b><span>唸完這首（不含曲名口白）</span></div></div>
+        <div class="tgt-main"><span class="tgt-ico">📍</span><div><b>${fmtS(tg.cum)}</b><span>整冊計時：唸完這首時不超過此時間（限時 ${fmtS(tt.limit)}）</span></div></div>
+        ${tp?`<div class="tgt-main"><span class="tgt-ico">⭐</span><div><b>精選六首 ${tp.sec} 秒</b><span>精選第 ${tp.i+1} 首・累計 ${fmtS(tp.cum)}（限時 3:00）</span></div></div>`:""}
+        <details class="tgt-how"><summary>目標秒數怎麼算？</summary><p>${VOLS["v"+vol].short}限時 ${fmtS(tt.limit)}＝開場口白 ${tt.intro} 秒＋${tt.n} 首曲名口白各 ${tt.title} 秒＋安全緩衝 ${tt.buf} 秒＋唸童謠 ${tt.rhyme} 秒。唸童謠的 ${tt.rhyme} 秒再依每首的音節數分配；這首約 ${tg.syl} 個音節，所以目標是 ${tg.sec} 秒。練習時用「模擬錄音」計時，比目標慢太多就要加強連音與節奏；比目標快很多，要留意是否唸得太趕、咬字不清。</p></details>
+      </div>
     </div>
   </div>
   <div class="song-grid">
@@ -1831,7 +1866,7 @@ function renderSong(){
       </div>
       <div class="sheet quick-card">
         <span class="pill">本首練習</span>
-        <div class="quick-stats"><div><b>${store.get("cnt-"+id,0)}</b><span>練習次數</span></div><div><b>${VMODES.filter(m=>vlSrc(d,m.k)).length}</b><span>真人示範</span></div><div><b>${(s[2]||"").split("\n").filter(Boolean).length||"—"}</b><span>句歌詞</span></div></div>
+        <div class="quick-stats"><div><b>${store.get("cnt-"+id,0)}</b><span>練習次數</span></div><div><b>${VMODES.filter(m=>vlSrc(d,m.k)).length}</b><span>真人示範</span></div><div><b>${tg.sec}<small> 秒</small></b><span>目標秒數</span></div></div>
         <div class="quick-go">
           <button class="qg" data-jump-to="vlab">🎙<span>語音練習</span></button>
           <button class="qg" data-jump-to="essayBox">📈<span>語調一點通</span></button>
