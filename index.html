@@ -1961,7 +1961,7 @@ function renderSong(){
         <div class="quick-go">
           <button class="qg" data-jump-to="vlab">🎙<span>語音練習</span></button>
           <button class="qg" data-jump-to="essayBox">📈<span>語調一點通</span></button>
-          <button class="qg" data-jump-to="lyrBox">📜<span>歌詞朗讀</span></button>
+          <button class="qg" data-jump-to="lyrBox">🔤<span>美語唸童謠</span></button>
           <button class="qg" data-jump-to="zhBox">🀄<span>中文唸童謠</span></button>
           <button class="qg" data-markly="${vol}-${no}">✎<span>劃記練習</span></button>
         </div>
@@ -1970,7 +1970,7 @@ function renderSong(){
   </div>
   <div class="sheet vlab" id="vlab"></div>
   <div class="sheet essay-box" id="essayBox"><div class="sec-head"><span class="pill">短文</span><span class="muted small">語調一點通：數字 1、4 標聲調，圓點 ● 為輕聲・點圖放大</span></div>${essay}</div>
-  <div class="sheet lyr-box" id="lyrBox"><span class="pill">歌詞</span>${lyr}</div>
+  <div class="sheet lyr-box" id="lyrBox"><div class="sec-head"><span class="pill">🔤 道地美語唸童謠</span><span class="muted small">大蒨老師朗讀・跟著唸出自然的美語語調與連音</span></div>${lyr}</div>
   ${ZH_CHANT[id]?`<div class="sheet zh-box" id="zhBox"><div class="sec-head"><span class="pill">🀄 中文翻譯唸童謠</span><span class="muted small">蕭博士中文翻譯・唸出英文童謠的意思與韻腳</span></div>
     ${d.zh?`<div class="trk zh"><div class="trk-h"><b>🀄 蕭博士中文翻譯${d.zhLabel?"（"+d.zhLabel+"）":""}</b><span class="trk-r">${[0.75,1,1.25].map(r=>`<button class="seg" data-arate="${r}" aria-pressed="${r===1}">${r}×</button>`).join("")}</span></div><audio controls preload="none" src="${esc(d.zh)}"></audio></div>`:""}
     <div class="zh-chant">${ZH_CHANT[id].split("\n").map(l=>`<p>${esc(l)}</p>`).join("")}</div>
