@@ -601,6 +601,53 @@ footer{background:#1d3566}
 .tgt-how summary{cursor:pointer;color:var(--ink);font-weight:600}
 .tgt-how p{margin-top:6px;color:var(--muted);line-height:1.7}
 .quick-stats b small{font-size:.75rem}
+/* 每日打卡 */
+.ck-home{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-left:5px solid var(--gold)}
+.ckh-q p{font-family:var(--f-display);font-size:1.15rem;color:var(--ink);line-height:1.6;margin-top:6px}
+.ckh-r{display:flex;align-items:center;gap:12px}
+.ckh-s{display:grid;text-align:center;line-height:1.2}
+.ckh-s b{font-family:var(--f-en);font-size:1.8rem;color:var(--rose)}
+.ckh-s span{font-size:.75rem;color:var(--muted)}
+@media (max-width:560px){.ck-home{grid-template-columns:1fr}.ckh-r{justify-content:space-between}}
+.ck-hero{display:grid;grid-template-columns:1fr 150px;gap:16px;align-items:center;background:linear-gradient(135deg,var(--gold-soft),var(--paper))}
+.ck-q{font-family:var(--f-display);font-size:clamp(1.25rem,3.4vw,1.7rem);color:var(--ink);line-height:1.6;margin-top:8px}
+.ck-by{color:var(--muted);font-size:.85rem;margin-top:4px}
+.ck-mascot{width:150px;height:150px;border-radius:20px;object-fit:cover;box-shadow:var(--shadow)}
+@media (max-width:520px){.ck-hero{grid-template-columns:1fr 96px}.ck-mascot{width:96px;height:96px}}
+.ck-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ck-stats .stat{text-align:center}
+.ck-stats .stat b{font-size:1.6rem;color:var(--rose)}
+@media (max-width:520px){.ck-stats{grid-template-columns:repeat(2,1fr)}}
+.ck-ask{font-weight:700;color:var(--ink)}
+.ck-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ck-chip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--fg)}
+.ck-chip[aria-pressed="true"]{background:var(--mark-green);border-color:var(--mark-green);color:#fff}
+.ck-go{justify-self:start;font-size:1.1rem;padding:12px 26px}
+@media (max-width:520px){.ck-go{justify-self:stretch;justify-content:center}}
+#ckToday{display:grid;gap:10px}
+#ckToday .f{display:grid;gap:4px;font-weight:600;font-size:.9rem}
+.ck-done{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;background:var(--gold-soft);border:1.5px solid var(--gold);border-radius:14px;padding:12px}
+.ck-done img{width:110px;height:110px;border-radius:16px;object-fit:cover}
+.ck-done b{font-family:var(--f-display);font-size:1.5rem;color:var(--ink)}
+.ck-done p{margin-top:4px}
+.ck-done.pop{animation:ckpop .6s ease}
+@keyframes ckpop{0%{transform:scale(.9);opacity:.3}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.ck-done.pop{animation:none}}
+.ck-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+.ck-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.ck-cal .h{text-align:center;font-size:.75rem;color:var(--muted)}
+.ck-d{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:10px;background:var(--paper);display:grid;place-items:center;font-family:var(--f-en);font-size:.85rem;color:var(--muted);padding:0;overflow:hidden;cursor:default}
+.ck-d.on{cursor:pointer;border-color:var(--gold)}
+.ck-d img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.ck-d.on span{position:absolute;right:3px;bottom:2px;background:rgba(255,255,255,.85);color:#2c2a33;border-radius:6px;padding:0 4px;font-size:.7rem;font-weight:700}
+.ck-d.today{box-shadow:0 0 0 2.5px var(--rose)}
+.ck-detail{background:var(--tint);border-radius:10px;padding:8px 12px;font-size:.92rem}
+.ck-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.ck-badge{display:grid;justify-items:center;text-align:center;gap:2px;padding:10px 6px;border:1px dashed var(--line);border-radius:12px;opacity:.5;filter:grayscale(1)}
+.ck-badge span{font-size:1.8rem}
+.ck-badge b{font-size:.82rem}
+.ck-badge small{font-size:.72rem;color:var(--muted)}
+.ck-badge.got{opacity:1;filter:none;border:1.5px solid var(--gold);background:var(--gold-soft)}
 /* 卷軸朗讀錄音 */
 /* 句子語音練習 */
 .vl-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
@@ -752,9 +799,9 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
     <button class="bar-btn" id="reloadBtn" aria-label="重新整理頁面">↻<span class="hide-s"> 重新整理</span></button>
     <button class="bar-btn theme-btn" id="themeBtn" aria-label="切換深淺色">◐</button>
   </div>
-  <div class="menu" id="menu" hidden><div class="wrap menu-grid"><div class="mg"><h4>總覽</h4><div class="mg-items"><button class="mtab" data-target="home">認證總覽</button></div></div><div class="mg"><h4>曲目</h4><div class="mg-items"><button class="mtab" data-target="pick">精選六首</button><button class="mtab" data-target="v1">第一冊</button><button class="mtab" data-target="v2">第二冊</button><button class="mtab" data-target="v3">第三冊</button><button class="mtab" data-target="sing">♪ 歡唱童謠</button><button class="mtab" data-target="team">🎶 童謠團練</button></div></div><div class="mg"><h4>練習</h4><div class="mg-items"><button class="mtab" data-target="plan">練習日程</button><button class="mtab" data-target="review">★ 重點複習</button><button class="mtab" data-target="mark">劃記練習</button><button class="mtab" data-target="note">筆記本</button></div></div><div class="mg"><h4>錄製</h4><div class="mg-items"><button class="mtab" data-target="rec">錄製準備</button><button class="mtab" data-target="mocka">模擬錄音</button><button class="mtab" data-target="mockv">模擬錄影</button><button class="mtab tab-rec" data-target="formal">● 正式錄影</button></div></div><div class="mg"><h4>報名</h4><div class="mg-items"><button class="mtab" data-target="time">報名時程</button><button class="mtab" data-target="rules">評分規範</button></div></div><div class="mg"><h4>說明</h4><div class="mg-items"><button class="mtab" data-target="help">使用說明</button><button class="mtab" data-target="pre">序言後記</button></div></div></div></div>
+  <div class="menu" id="menu" hidden><div class="wrap menu-grid"><div class="mg"><h4>總覽</h4><div class="mg-items"><button class="mtab" data-target="home">認證總覽</button></div></div><div class="mg"><h4>曲目</h4><div class="mg-items"><button class="mtab" data-target="pick">精選六首</button><button class="mtab" data-target="v1">第一冊</button><button class="mtab" data-target="v2">第二冊</button><button class="mtab" data-target="v3">第三冊</button><button class="mtab" data-target="sing">♪ 歡唱童謠</button><button class="mtab" data-target="team">🎶 童謠團練</button></div></div><div class="mg"><h4>練習</h4><div class="mg-items"><button class="mtab" data-target="checkin">✅ 每日打卡</button><button class="mtab" data-target="plan">練習日程</button><button class="mtab" data-target="review">★ 重點複習</button><button class="mtab" data-target="mark">劃記練習</button><button class="mtab" data-target="note">筆記本</button></div></div><div class="mg"><h4>錄製</h4><div class="mg-items"><button class="mtab" data-target="rec">錄製準備</button><button class="mtab" data-target="mocka">模擬錄音</button><button class="mtab" data-target="mockv">模擬錄影</button><button class="mtab tab-rec" data-target="formal">● 正式錄影</button></div></div><div class="mg"><h4>報名</h4><div class="mg-items"><button class="mtab" data-target="time">報名時程</button><button class="mtab" data-target="rules">評分規範</button></div></div><div class="mg"><h4>說明</h4><div class="mg-items"><button class="mtab" data-target="help">使用說明</button><button class="mtab" data-target="pre">序言後記</button></div></div></div></div>
 </header>
-<nav class="tabstrip" aria-label="分頁"><div class="wrap"><div class="tabs" id="tabs" role="tablist"><div class="tg"><span class="tgl">總覽</span><button class="tab" data-target="home">認證總覽</button></div><div class="tg"><span class="tgl">曲目</span><button class="tab" data-target="pick">精選六首</button><button class="tab" data-target="v1">第一冊</button><button class="tab" data-target="v2">第二冊</button><button class="tab" data-target="v3">第三冊</button><button class="tab" data-target="sing">♪ 歡唱童謠</button><button class="tab" data-target="team">🎶 童謠團練</button></div><div class="tg"><span class="tgl">練習</span><button class="tab" data-target="plan">練習日程</button><button class="tab" data-target="review">★ 重點複習</button><button class="tab" data-target="mark">劃記練習</button><button class="tab" data-target="note">筆記本</button></div><div class="tg"><span class="tgl">錄製</span><button class="tab" data-target="rec">錄製準備</button><button class="tab" data-target="mocka">模擬錄音</button><button class="tab" data-target="mockv">模擬錄影</button><button class="tab tab-rec" data-target="formal">● 正式錄影</button></div><div class="tg"><span class="tgl">報名</span><button class="tab" data-target="time">報名時程</button><button class="tab" data-target="rules">評分規範</button></div><div class="tg"><span class="tgl">說明</span><button class="tab" data-target="help">使用說明</button><button class="tab" data-target="pre">序言後記</button></div></div></div></nav>
+<nav class="tabstrip" aria-label="分頁"><div class="wrap"><div class="tabs" id="tabs" role="tablist"><div class="tg"><span class="tgl">總覽</span><button class="tab" data-target="home">認證總覽</button></div><div class="tg"><span class="tgl">曲目</span><button class="tab" data-target="pick">精選六首</button><button class="tab" data-target="v1">第一冊</button><button class="tab" data-target="v2">第二冊</button><button class="tab" data-target="v3">第三冊</button><button class="tab" data-target="sing">♪ 歡唱童謠</button><button class="tab" data-target="team">🎶 童謠團練</button></div><div class="tg"><span class="tgl">練習</span><button class="tab" data-target="checkin">✅ 每日打卡</button><button class="tab" data-target="plan">練習日程</button><button class="tab" data-target="review">★ 重點複習</button><button class="tab" data-target="mark">劃記練習</button><button class="tab" data-target="note">筆記本</button></div><div class="tg"><span class="tgl">錄製</span><button class="tab" data-target="rec">錄製準備</button><button class="tab" data-target="mocka">模擬錄音</button><button class="tab" data-target="mockv">模擬錄影</button><button class="tab tab-rec" data-target="formal">● 正式錄影</button></div><div class="tg"><span class="tgl">報名</span><button class="tab" data-target="time">報名時程</button><button class="tab" data-target="rules">評分規範</button></div><div class="tg"><span class="tgl">說明</span><button class="tab" data-target="help">使用說明</button><button class="tab" data-target="pre">序言後記</button></div></div></div></nav>
 
 <main class="wrap">
 
@@ -778,6 +825,8 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       </div>
     </div>
   </div>
+
+  <div class="sheet ck-home" id="ckHome"></div>
 
   <div class="sheet">
     <div class="sec-head"><span class="pill">認證項目</span><span class="muted">點卡片進入該冊分頁</span></div>
@@ -860,6 +909,39 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
   <div class="sheet">
     <div class="sec-head"><span class="pill">本冊曲目</span><span class="muted small">點曲名進入曲目頁，對照歌詞與示範音檔</span></div>
     <div class="team-list" id="teamList"></div>
+  </div>
+</section>
+
+<!-- ========== 每日打卡 ========== -->
+<section class="page" id="checkin" hidden>
+  <div class="sheet ck-hero">
+    <div class="ck-quote">
+      <span class="pill">今日小語</span>
+      <p class="ck-q" id="ckQuote"></p>
+      <p class="ck-by" id="ckBy"></p>
+    </div>
+    <img class="ck-mascot" id="ckMascot" alt="">
+  </div>
+
+  <div class="sheet">
+    <div class="sec-head"><h2>✅ 每日打卡</h2><span class="muted small" id="ckDate"></span></div>
+    <div class="ck-stats" id="ckStats"></div>
+    <div id="ckToday"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="sheet">
+      <div class="sec-head"><h3 class="h-ink">打卡月曆</h3>
+        <div class="ck-nav"><button class="btn-s" id="ckPrev" aria-label="上個月">‹</button><b id="ckMonth"></b><button class="btn-s" id="ckNext" aria-label="下個月">›</button></div></div>
+      <div class="ck-cal" id="ckCal"></div>
+      <p class="muted small">點已打卡的日子，可以看那天練了什麼。</p>
+      <div class="ck-detail" id="ckDetail" hidden></div>
+    </div>
+    <div class="sheet">
+      <h3 class="h-ink">打卡徽章</h3>
+      <div class="ck-badges" id="ckBadges"></div>
+      <p class="muted small">連續打卡最長紀錄會保留；中斷了也沒關係，明天再開始就好。打卡紀錄只存在這台裝置，換裝置前請到「★ 重點複習」匯出備份。</p>
+    </div>
   </div>
 </section>
 
@@ -1460,6 +1542,7 @@ footer .fine{font-size:.82rem;opacity:.8;max-width:60ch}
       <div class="fn"><b>🎙 句子語音練習</b><p>曲目頁的真人示範：① 逐字朗讀、② 慢速分解、③ 一般語速、④ 朗誦讀經、⑤ 中文翻譯五種模式，可調速；邊聽邊看歌詞，點句子看「自然語流解析」；錄下自己唸，和示範對照回放。</p></div>
       <div class="fn"><b>♪ 歡唱童謠</b><p>兩個播放清單可切換：歌唱學童謠第一冊（14 首）、SoR 第五階段文意理解（9 支）；附歡唱三步驟與每日歡唱次數紀錄。</p></div>
       <div class="fn"><b>🎶 童謠團練</b><p>第一～三冊團練影片播放清單，可切換冊別，下方列出本冊曲目，點曲名直接進入曲目頁對照歌詞。</p></div>
+      <div class="fn"><b>✅ 每日打卡</b><p>每天的鼓勵小語、勾選今天練了什麼並寫一句心得、連續天數與最長紀錄、貼圖打卡月曆、1～100 天徽章；首頁也會顯示今日小語與打卡狀態。</p></div>
       <div class="fn"><b>筆記本</b><p>三種方格紙，可打字、手寫（紅藍綠筆、橡皮擦、復原），還有 18 張童謠小夥伴貼圖可拖曳、縮放；分成重點摘要、心得分享、塗鴉，自動儲存，可存成圖片。</p></div>
       <div class="fn"><b>★ 重點複習</b><p>星號曲目一輪一輪洗牌練習：先看中文曲名與積木圖自己唸，再翻開核對、聽示範，標記會了或再練。備份可匯出、匯入，跨裝置接著學。</p></div>
       <div class="fn"><b>練習日程</b><p>學新曲 → 分段串連 → 全冊計時 → 錄製上傳，每天打勾記錄進度。</p></div>
@@ -1694,7 +1777,7 @@ function songsOf(key){
 }
 
 /* ---------- 分頁導覽（data-target） ---------- */
-const PAGES=["home","pick","v1","v2","v3","song","sing","team","plan","review","pre","time","rules","mark","rec","mocka","mockv","formal","note","help"];
+const PAGES=["home","pick","v1","v2","v3","song","sing","team","checkin","plan","review","pre","time","rules","mark","rec","mocka","mockv","formal","note","help"];
 function go(id,scroll=true){
   if(!PAGES.includes(id)) id="home";
   PAGES.forEach(p=>{$("#"+p).hidden = p!==id});
@@ -1705,6 +1788,7 @@ function go(id,scroll=true){
   store.set("tab",id);
   if(typeof stuLeave==="function") stuLeave(id);
   if(id==="note"&&typeof noteShown==="function") requestAnimationFrame(noteShown);
+  if(id==="checkin"&&typeof ckRender==="function") ckRender();
   if(scroll) window.scrollTo({top:0,behavior:"smooth"});
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-target]");if(!b)return;e.preventDefault();
@@ -2648,6 +2732,94 @@ $("#nbStk").addEventListener("pointerup",stkEnd);$("#nbStk").addEventListener("p
 document.addEventListener("keydown",e=>{if(nbMode==="sticker"&&stkSel>=0&&(e.key==="Delete"||e.key==="Backspace")&&!/INPUT|TEXTAREA/.test(e.target.tagName)){STK.splice(stkSel,1);stkSel=-1;stkDraw();stkSave()}});
 
 function noteShown(){nbLayout()}
+/* ---------- 每日打卡 ---------- */
+const QUOTES=[
+ ["小橋已橫在眼前，你只要一開口，即登彼岸。","初版序"],
+ ["重複，重複，再重複，是被抱在懷裡的安全感。","後記"],
+ ["押韻，押韻，再押韻，是一定找得到路的歸屬感。","後記"],
+ ["想想想想當然能想；寫寫寫誰也不會寫。今天，唸唸唸就對了！","初版序"],
+ ["Many are learning; and so should you.","再版序"],
+ ["Let's get STARted！每一次開口，都是閃亮亮的開始。","後記"],
+ ["驚喜也好，驚覺也好；能嚇一跳，對誰都好。","初版序"],
+ ["慢慢唸清楚，比快快唸含糊更接近道地。","練習提醒"],
+ ["先聽見差異，再理解變化；從模仿聲音，走向自主表達。","SoR 學習理念"],
+ ["今天的你，比昨天的你多唸對了一個音。","鼓勵小語"],
+ ["Rain, rain, go away——煩惱放一邊，先唸一首再說。","童謠打氣"],
+ ["Twinkle, twinkle, little star：小星星每天亮一點，你也是。","童謠打氣"],
+ ["Humpty Dumpty 跌倒了，但你練習中斷了可以再站起來。","童謠打氣"],
+ ["Row, row, row your boat——一槳一槳地划，終會到彼岸。","童謠打氣"],
+ ["An apple a day；一天一首童謠，發音醫生不用找。","童謠打氣"],
+ ["Jack be nimble, Jack be quick！今天也輕快地跳過一個難音。","童謠打氣"],
+ ["If you're happy and you know it, clap your hands！打完卡，給自己拍拍手。","童謠打氣"],
+ ["紅色母音拉得準，藍色子音咬得清，語調自然就跟上。","練習提醒"],
+ ["錄下自己的聲音，是最誠實的老師。","練習提醒"],
+ ["不求一次唸完美，只求每天唸一遍。","鼓勵小語"],
+ ["一首童謠的距離，就是你和外國朋友相遇的距離。","初版序意"],
+ ["連音不是唸快，是把字和字牽起手。","練習提醒"],
+ ["卡住的地方，正是明天要變強的地方。","鼓勵小語"],
+ ["大聲唸出來，耳朵會記得，嘴巴也會記得。","練習提醒"],
+ ["十分鐘也算數！持續，比一次練很久更有力量。","鼓勵小語"],
+ ["每一次劃記，都是幫自己畫出前進的地圖。","練習提醒"],
+ ["The world is expecting us. 世界正在等你開口。","初版序"],
+ ["童謠是橋，扶著它，一首換一首，慢慢走過去。","初版序"],
+ ["今天唸得不順也沒關係，你已經比沒唸的自己前進了。","鼓勵小語"],
+ ["聽十遍不如唸一遍，唸十遍不如錄一遍。","練習提醒"]];
+const CK_ITEMS=[["listen","🎧 聽示範"],["shadow","🗣 跟讀"],["rec","🎙 錄音比對"],["mark","✎ 劃記"],["timer","⏱ 全冊計時"],["sing","♪ 歡唱團練"],["note","📒 寫筆記"]];
+const CK_BADGES=[[1,"🌱","第一次打卡"],[3,"✨","連續 3 天"],[7,"⭐","連續一週"],[14,"🌙","連續兩週"],[21,"🌈","21 天習慣養成"],[30,"🏅","連續 30 天"],[50,"🚀","連續 50 天"],[100,"👑","連續 100 天"]];
+let CK=store.get("checkins",{}),ckView=new Date(),ckSel=[];
+const ckToday=()=>ymd(new Date());
+function dayIdx(){const d=new Date();return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5)+d.getFullYear()}
+function ckStreak(){let n=0,d=new Date();if(!CK[ymd(d)])d.setDate(d.getDate()-1);while(CK[ymd(d)]){n++;d.setDate(d.getDate()-1)}return n}
+function ckBest(){const ks=Object.keys(CK).sort();let best=0,cur=0,prev=null;ks.forEach(k=>{const d=new Date(k+"T00:00:00");cur=prev&&Math.round((d-prev)/864e5)===1?cur+1:1;best=Math.max(best,cur);prev=d});return best}
+function ckMonthCount(){const p=ckToday().slice(0,7);return Object.keys(CK).filter(k=>k.startsWith(p)).length}
+function ckCheer(streak){const m={1:"好的開始是成功的一半！明天見～",3:"連續 3 天！習慣正在發芽 🌱",7:"整整一週！你的嘴巴已經記住童謠的節奏了 ⭐",14:"兩週不間斷，太厲害了 🌙",21:"21 天，習慣養成！🌈",30:"一個月！可以準備報名認證囉 🏅",50:"50 天，你是童謠達人 🚀",100:"100 天！給自己一個大大的掌聲 👑"};
+  return m[streak]||["今天也完成了，給自己拍拍手 👏","每天一點點，發音穩穩進步！","你的聲音，越來越像童謠裡的小星星 ✨","持續就是最強的天賦！","明天也一起開口唸吧！"][streak%5]}
+function ckQuoteHTML(){const q=QUOTES[dayIdx()%QUOTES.length];return q}
+function ckRenderHome(){const box=$("#ckHome");if(!box)return;const q=ckQuoteHTML(),done=!!CK[ckToday()],s=ckStreak();
+  box.innerHTML=`<div class="ckh-q"><span class="pill">今日小語</span><p>${esc(q[0])}</p></div>
+   <div class="ckh-r"><div class="ckh-s"><b>${s}</b><span>連續天數</span></div>
+   <button class="btn ${done?"ghost":"rose"}" data-target="checkin">${done?"✅ 今天已打卡":"✍ 今日打卡"}</button></div>`}
+function ckRender(){
+  const q=ckQuoteHTML(),t=ckToday(),rec=CK[t],s=ckStreak(),st=STICKERS||[];
+  $("#ckQuote").textContent=q[0];$("#ckBy").textContent="— "+q[1];
+  if(st.length)$("#ckMascot").src=st[dayIdx()%st.length].src;
+  const d=new Date();$("#ckDate").textContent=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}（週${WK[d.getDay()]}）`;
+  $("#ckStats").innerHTML=`<div class="stat"><b>${s}</b><span>🔥 連續天數</span></div><div class="stat"><b>${ckBest()}</b><span>最長連續</span></div><div class="stat"><b>${ckMonthCount()}</b><span>本月打卡</span></div><div class="stat"><b>${Object.keys(CK).length}</b><span>累計打卡</span></div>`;
+  if(rec){const stk=st[rec.s%st.length];
+    $("#ckToday").innerHTML=`<div class="ck-done">${stk?`<img src="${stk.src}" alt="${stk.n}">`:""}<div><b>今天已打卡！</b><p>${esc(rec.cheer||ckCheer(s))}</p>
+      <p class="muted small">今天練了：${(rec.items||[]).map(k=>(CK_ITEMS.find(x=>x[0]===k)||[,k])[1]).join("、")||"（未勾選項目）"}${rec.note?`<br>心得：${esc(rec.note)}`:""}</p>
+      <button class="btn-s" id="ckUndo">取消今天的打卡</button></div></div>`;
+  }else{
+    $("#ckToday").innerHTML=`<p class="ck-ask">今天練了哪些？（可複選）</p>
+      <div class="ck-chips">${CK_ITEMS.map(([k,l])=>`<button class="ck-chip" data-ck="${k}" aria-pressed="${ckSel.includes(k)}">${l}</button>`).join("")}</div>
+      <label class="f" for="ckNote">一句話心得（選填）<input type="text" id="ckNote" maxlength="60" placeholder="例：〈劣鎖靠良鑰〉的 donkey 終於唸順了！"></label>
+      <button class="btn rose ck-go" id="ckGo">✍ 今天練好了，打卡！</button>`;
+  }
+  // badges
+  const best=ckBest();
+  $("#ckBadges").innerHTML=CK_BADGES.map(([n,ic,l])=>`<div class="ck-badge${best>=n?" got":""}"><span>${ic}</span><b>${l}</b><small>${best>=n?"已獲得":`還差 ${n-best} 天`}</small></div>`).join("");
+  // calendar
+  const y=ckView.getFullYear(),m=ckView.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
+  $("#ckMonth").textContent=`${y} 年 ${m+1} 月`;
+  let h=[..."日一二三四五六"].map(x=>`<div class="h">${x}</div>`).join("");for(let i=0;i<first;i++)h+="<div></div>";
+  for(let i=1;i<=last;i++){const k=`${y}-${String(m+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`,r=CK[k];
+    h+=`<button class="ck-d${r?" on":""}${k===t?" today":""}" data-ckday="${k}" ${r?"":"tabindex=\"-1\""}>${r?`<img src="${(st[r.s%st.length]||{}).src||""}" alt="">`:""}<span>${i}</span></button>`}
+  $("#ckCal").innerHTML=h;
+  ckRenderHome();
+}
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-ck]");if(c){const k=c.dataset.ck;ckSel=ckSel.includes(k)?ckSel.filter(x=>x!==k):[...ckSel,k];c.setAttribute("aria-pressed",ckSel.includes(k));return}
+  if(e.target.closest("#ckGo")){const t=ckToday();const s0=ckStreak();CK[t]={items:ckSel.slice(),note:($("#ckNote").value||"").trim(),s:Math.floor(Math.random()*999),at:Date.now()};
+    const s=ckStreak();CK[t].cheer=ckCheer(s);store.set("checkins",CK);ckSel=[];ckRender();
+    const done=$(".ck-done");if(done){done.classList.add("pop")}return}
+  if(e.target.closest("#ckUndo")){delete CK[ckToday()];store.set("checkins",CK);ckRender();return}
+  if(e.target.closest("#ckPrev")){ckView=new Date(ckView.getFullYear(),ckView.getMonth()-1,1);ckRender();return}
+  if(e.target.closest("#ckNext")){ckView=new Date(ckView.getFullYear(),ckView.getMonth()+1,1);ckRender();return}
+  const dd=e.target.closest("[data-ckday]");if(dd){const r=CK[dd.dataset.ckday],box=$("#ckDetail");if(!r){box.hidden=true;return}
+    box.hidden=false;box.innerHTML=`<b>${dd.dataset.ckday.slice(5).replace("-","/")}</b>　${(r.items||[]).map(k=>(CK_ITEMS.find(x=>x[0]===k)||[,k])[1]).join("、")||"已打卡"}${r.note?`<br><span class="muted">「${esc(r.note)}」</span>`:""}`}
+});
+ckRender();
+
 nbRender();
 
 
